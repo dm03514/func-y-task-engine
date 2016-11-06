@@ -23,6 +23,8 @@ Schedules, executes instructions, applies task state transitions, and reports on
 - Expose a list of all tasks executing
 - Expose each state of each task executing
 - Historic results (what retention policy?)
+- Each task execution is logged
+  - Each state transition in the task is logged
 
 ### Conditions
 - Wait
@@ -33,8 +35,57 @@ Schedules, executes instructions, applies task state transitions, and reports on
 - HTTP
 - RPC?
 - Message?
+- DB
 
 
 --------
 Tasks are static and will be declared statically as a file.
 Tasks scheduling will be exposes as a restful service.
+
+
+Each task is modeled as a state machine:
+
+https://github.com/looplab/fsm
+
+
+Task
+  - version
+  - start_state
+  - final_state
+  - state1
+    - instructions
+      - instruction 1
+      - instruction 2
+  - state2
+    - instructions
+      - instruction 1
+    - transition_condition
+  - end state
+  - max_global_transition_timeout
+  
+  
+Framework:
+  - Input
+    - Task struct
+  - Spawns a main goroutine for each new task
+  - Creates a main_task_channel that will be passed to all sub go routines
+  - Inspects task for initial state, assigned to next_state
+  - main_loop: Task is put into next_state
+    - Check if state is final_state
+    - Valid transfer states are identified 
+    - State instructions are executed
+    - Transition timeout is set
+    - Each dependent state transition_condition is started in a goroutine, passed main_task_channel
+    - When a condition is fufilled or failed
+      - results is sent back to main task routine
+      - main task routine cancels all running tasks
+      - applies next_state
+  - transition_timeout
+    - reset per transition
+    - when reached:
+      - task is marked as failure
+      - all goroutines are stopped
+      - task metrics are logged
+ 
+
+    

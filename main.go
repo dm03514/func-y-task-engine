@@ -1,14 +1,18 @@
 package main
 
 import (
+	"github.com/dm03514/async-states-task-engine/tasks"
 	"github.com/dm03514/async-states-task-engine/task"
 )
 
 func main() {
-	tfs := NewServer()
+
+	ts := tasks.Init()
+
+	tfs := NewServer(ts)
 
 	lr := task.LogReader{
-		Events: tfs.events,
+		Events: ts.Events,
 	}
 	go lr.Consume()
 

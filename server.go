@@ -1,20 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"github.com/dm03514/async-states-task-engine/task"
-	"github.com/dm03514/async-states-task-engine/usertasks"
-	"fmt"
-	"sync"
+	"github.com/dm03514/async-states-task-engine/tasks"
 )
 
-
 type TaskFrameworkServer struct {
-	activeTasks map[string]task.ITask
-	events chan *task.TaskEvent
+	tasks *tasks.Tasks
 }
-
 
 func (tfs *TaskFrameworkServer) Serve() {
 	// fmt.Printf("Server listening :8080\n")
@@ -22,60 +17,32 @@ func (tfs *TaskFrameworkServer) Serve() {
 }
 
 func (tfs *TaskFrameworkServer) runTask(w http.ResponseWriter, r *http.Request) {
-	var mu = &sync.Mutex{}
 
 	taskname := r.URL.Query().Get("taskname")
+
 	if taskname == "" {
 		fmt.Printf("Server: Taskname not present\n")
 		return
 	}
-	// create a uuid update the
-	task := tfs.getTask(taskname)
+	taskId := tfs.tasks.Start(taskname)
 
-	mu.Lock()
-	go task.Start()
-	tfs.activeTasks[task.IdString()] = task
-	mu.Unlock()
-
-	fmt.Fprintf(w, "%s\n", task.IdString())
+	fmt.Fprintf(w, "%s\n", taskId)
 }
 
 func (tfs *TaskFrameworkServer) status(w http.ResponseWriter, r *http.Request) {
-	var mu = &sync.Mutex{}
 	taskId := r.URL.Query().Get("taskId")
-
-	mu.Lock()
-	defer mu.Unlock()
-
-	task, ok := tfs.activeTasks[taskId]
+	state, ok := tfs.tasks.State(taskId)
 	if !ok {
-		fmt.Fprintf(w, "Task %v not found", task)
-		return
+		fmt.Fprintf(w, "TaskId %v not found", taskId)
 	}
-	fmt.Fprintf(w, "%s\n", task.CurrentState())
+	fmt.Fprintf(w, "%s\n", state)
 }
 
-func (tfs *TaskFrameworkServer) getTask(taskname string) task.ITask {
-	// fmt.Printf("getTask(\"%s\")\n", taskname)
-	var t task.ITask
-
-	switch taskname {
-	case "DoubleSearchTask":
-		t = usertasks.NewDoubleSearchTask(tfs.events)
-	case "TripleTimeoutTask":
-		t = usertasks.NewTripleTimeoutTask(tfs.events)
-	}
-	// fmt.Printf("Instantiated task %+v\n", t)
-	return t
-}
-
-func NewServer() *TaskFrameworkServer {
+func NewServer(tasks *tasks.Tasks) *TaskFrameworkServer {
 	tfs := &TaskFrameworkServer{
-		activeTasks: make(map[string]task.ITask),
-		events: make(chan *task.TaskEvent),
+		tasks: tasks,
 	}
 	http.HandleFunc("/runtask", tfs.runTask)
 	http.HandleFunc("/status", tfs.status)
 	return tfs
 }
-

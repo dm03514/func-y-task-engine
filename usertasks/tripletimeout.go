@@ -13,19 +13,6 @@ type tripleTimeoutTask struct {
 	task.Task
 }
 
-func (ttt *tripleTimeoutTask) Start() {
-	ttt.Task.Emit(fmt.Sprintf("TripleTimeoutTask.Start()"))
-	ttt.Task.Run()
-}
-
-func (ttt *tripleTimeoutTask) CurrentState() string {
-	return ttt.Task.FSM.Current()
-}
-
-func (ttt *tripleTimeoutTask) Id() uuid.UUID {
-	return ttt.Task.Id
-}
-
 func NewTripleTimeoutTask(events chan *task.TaskEvent) task.ITask {
 
 	tcs := task.TransitionConditions{

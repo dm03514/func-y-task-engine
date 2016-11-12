@@ -34,10 +34,10 @@ func (tfs *TaskFrameworkServer) runTask(w http.ResponseWriter, r *http.Request) 
 
 	mu.Lock()
 	go task.Start()
-	tfs.activeTasks[task.Id().String()] = task
+	tfs.activeTasks[task.IdString()] = task
 	mu.Unlock()
 
-	fmt.Fprintf(w, "%s\n", task.Id().String())
+	fmt.Fprintf(w, "%s\n", task.IdString())
 }
 
 func (tfs *TaskFrameworkServer) status(w http.ResponseWriter, r *http.Request) {

@@ -67,16 +67,3 @@ func NewDoubleSearchTask(events chan *task.TaskEvent) task.ITask {
 	return dst
 }
 
-// Logs the first state and applies transition to the StartState
-func (dst *doubleSearchTask) Start() {
-	dst.Task.Emit(fmt.Sprintf("DoubleSearchTask.Start()"))
-	dst.Task.Run()
-}
-
-func (dst *doubleSearchTask) CurrentState() string {
-	return dst.Task.FSM.Current()
-}
-
-func (dst *doubleSearchTask) Id() uuid.UUID {
-	return dst.Task.Id
-}

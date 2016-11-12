@@ -11,7 +11,7 @@ import (
 type ITask interface {
 	Start()
 	CurrentState() string
-	Id() uuid.UUID
+	IdString() string
 }
 
 // should write the next state and return when condition is met.
@@ -45,6 +45,19 @@ func (t *Task) Emit(message string) {
 		TaskId: t.Id,
 		Message: message,
 	}
+}
+
+func (t *Task) IdString() string {
+	return t.Id.String()
+}
+
+func (t *Task) Start() {
+	t.Emit(fmt.Sprintf("Start()"))
+	t.Run()
+}
+
+func (t *Task) CurrentState() string {
+	return t.FSM.Current()
 }
 
 // Returns the function that will allow transition out of the current state

@@ -1,8 +1,8 @@
 package task
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type LogReader struct {

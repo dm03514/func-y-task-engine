@@ -1,15 +1,14 @@
 package task
 
 import (
-	"github.com/looplab/fsm"
 	"fmt"
-	"time"
+	"github.com/looplab/fsm"
 	"github.com/satori/go.uuid"
+	"time"
 )
 
-
 type ITask interface {
-	Start()
+	Run(done chan string)
 	CurrentState() string
 	IdString() string
 }
@@ -22,38 +21,33 @@ type TransitionCondition func(*Task, chan string)
 type TransitionConditions map[string]TransitionCondition
 
 type Task struct {
-	Version string
-	FSM *fsm.FSM
-	StartState string
-	FinalState string
-	TCs TransitionConditions
-	Id uuid.UUID
-	EventChannel chan *TaskEvent
+	Version      string
+	FSM          *fsm.FSM `json:"-"`
+	StartState   string
+	FinalState   string
+	TCs          TransitionConditions `json:"-"`
+	Id           uuid.UUID
+	EventChannel chan *TaskEvent `json:"-"`
 }
 
 // Emitted when notable task state changes occur
 type TaskEvent struct {
-	TaskId uuid.UUID
+	TaskId  uuid.UUID
 	Message string
-	Event string
-	Level int
+	Event   string
+	Level   int
 }
 
 // Sends a message on the EventChannel
 func (t *Task) Emit(message string) {
 	t.EventChannel <- &TaskEvent{
-		TaskId: t.Id,
+		TaskId:  t.Id,
 		Message: message,
 	}
 }
 
 func (t *Task) IdString() string {
 	return t.Id.String()
-}
-
-func (t *Task) Start() {
-	t.Emit(fmt.Sprintf("Start()"))
-	t.Run()
 }
 
 func (t *Task) CurrentState() string {
@@ -82,7 +76,7 @@ func (t *Task) TransitionFn() TransitionCondition {
 	return fn
 }
 
-func (t *Task) Run() {
+func (t *Task) Run(done chan string) {
 	t.Emit("starting_task")
 
 	nextState := make(chan string)
@@ -99,7 +93,8 @@ func (t *Task) Run() {
 		// while time is not reached
 		case <-time.After(1 * time.Hour):
 			t.Emit("Timeout")
-			panic("\tTask Timeout\n")
+			done <- t.IdString()
+			return
 
 		// and not final state
 		case requestedState := <-nextState:
@@ -112,6 +107,7 @@ func (t *Task) Run() {
 			// if this is end state complete
 			if requestedState == t.FinalState {
 				t.Emit(fmt.Sprintf("final state reached %q", t.FinalState))
+				done <- t.IdString()
 				// apply the finished state and update in log
 				return
 			}
@@ -123,8 +119,6 @@ func (t *Task) Run() {
 			go transitionFn(t, nextState)
 		default:
 			time.Sleep(50 * time.Millisecond)
-			// fmt.Printf("\t*defaultmain loop*\n")
 		}
 	}
 }
-

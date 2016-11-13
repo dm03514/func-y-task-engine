@@ -1,15 +1,14 @@
 package task
 
 import (
-	"testing"
-	"github.com/looplab/fsm"
 	"fmt"
+	"github.com/looplab/fsm"
+	"testing"
 )
-
 
 func TestTaskTransitionConditionNoCondition(t *testing.T) {
 	defer func() {
-	 	if r := recover(); r != nil {
+		if r := recover(); r != nil {
 			var ok bool
 			err, ok := r.(error)
 			if !ok {
@@ -33,7 +32,6 @@ func TestTaskTransitionConditionNoCondition(t *testing.T) {
 	}
 	task.TransitionFn()
 }
-
 
 // Checks that
 // given a current state
@@ -60,7 +58,7 @@ func TestTaskTransitionConditionSingleCondition(t *testing.T) {
 	transitionConditionFn := task.TransitionFn()
 	nextState := make(chan string)
 	go transitionConditionFn(nextState)
-	expectedResp := <- nextState
+	expectedResp := <-nextState
 
 	if expectedResp != "next_state" {
 		t.Error(fmt.Printf(

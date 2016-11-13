@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/dm03514/async-states-task-engine/tasks"
 	"log"
 	"net/http"
-	"github.com/dm03514/async-states-task-engine/tasks"
 )
 
 type TaskFrameworkServer struct {
@@ -33,7 +33,7 @@ func (tfs *TaskFrameworkServer) status(w http.ResponseWriter, r *http.Request) {
 	taskId := r.URL.Query().Get("taskId")
 	state, ok := tfs.tasks.State(taskId)
 	if !ok {
-		fmt.Fprintf(w, "TaskId %v not found", taskId)
+		fmt.Fprintf(w, tfs.tasks.String())
 	}
 	fmt.Fprintf(w, "%s\n", state)
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/dm03514/async-states-task-engine/tasks"
 	"github.com/dm03514/async-states-task-engine/task"
+	"github.com/dm03514/async-states-task-engine/tasks"
 )
 
 func main() {

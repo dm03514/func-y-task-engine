@@ -1,17 +1,26 @@
 package tasks
 
 import (
-	"github.com/dm03514/async-states-task-engine/usertasks"
-	"github.com/dm03514/async-states-task-engine/task"
-	"sync"
+	"encoding/json"
 	"fmt"
+	"github.com/dm03514/async-states-task-engine/task"
+	"github.com/dm03514/async-states-task-engine/usertasks"
+	"sync"
 )
-
 
 type Tasks struct {
 	activeTasks map[string]task.ITask
-	Events chan *task.TaskEvent
-	mu *sync.Mutex
+	Events      chan *task.TaskEvent
+	Done        chan string
+	mu          *sync.Mutex
+}
+
+func (ts *Tasks) String() string {
+	e, err := json.Marshal(ts.activeTasks)
+	if err != nil {
+		panic(err)
+	}
+	return string(e)
 }
 
 func (ts *Tasks) Task(taskname string) task.ITask {
@@ -30,10 +39,12 @@ func (ts *Tasks) Task(taskname string) task.ITask {
 
 func (ts *Tasks) Start(taskname string) string {
 	task := ts.Task(taskname)
+	go task.Run(ts.Done)
+
 	ts.mu.Lock()
-	go task.Start()
 	ts.activeTasks[task.IdString()] = task
 	ts.mu.Unlock()
+
 	return task.IdString()
 }
 
@@ -47,11 +58,23 @@ func (ts *Tasks) State(taskId string) (string, bool) {
 	return task.CurrentState(), ok
 }
 
+func (ts *Tasks) consumeDone() {
+	for id := range ts.Done {
+		ts.mu.Lock()
+		delete(ts.activeTasks, id)
+		ts.mu.Unlock()
+	}
+}
 
+// Instantiates tasks and starts the finished task consume, in a new
+// go routine
 func Init() *Tasks {
-	return &Tasks{
+	ts := &Tasks{
 		activeTasks: make(map[string]task.ITask),
 		Events:      make(chan *task.TaskEvent),
+		Done:        make(chan string),
 		mu:          &sync.Mutex{},
 	}
+	go ts.consumeDone()
+	return ts
 }

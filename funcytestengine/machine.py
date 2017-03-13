@@ -72,7 +72,8 @@ class Events(object):
         except (Exception, Timeout) as e:
             logger.error('%s', {
                 'message': 'event_execution_error',
-                'exception': e
+                'exception': e,
+                'event_name': event_name
             })
             event_result_q.put(EVENT_RESULT.FAILURE)
         else:

@@ -23,7 +23,6 @@ class NSQPublisherInitiator(BaseInitiator):
         logger.debug('%s', {
             'message': 'publishing_message_nsq'
         })
-        import ipdb; ipdb.set_trace();
         gnsq.Nsqd(address=self.nsqd_address).publish(
             self.topic,
             json.dumps(self.message)

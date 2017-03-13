@@ -6,4 +6,6 @@ class LengthEqual(object):
         self.length = length
 
     def is_met(self, collection):
-        return len(collection) == self.length
+        assert len(collection) == self.length, 'collection ({}) != expected ({})'.format(
+            len(collection), self.length
+        )

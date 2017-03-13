@@ -27,7 +27,7 @@ events:
                 "log": [],
                 "error_message": "Exception: ",
                 "retrying": true,
-                "channel": "unique_test_channel_1"
+                "channel": "unique_test_channel_2"
           }
       nsqd_address: localhost
       topic: test_topic
@@ -44,9 +44,8 @@ events:
   - name: assert_message_in_postgres
     initiator:
         type: postgres.SelectInitiator
-        query: "SELECT COUNT(*) FROM failed_jobs WHERE channel='unique_test_channel_1'"
-        username: vagrant
-        host: localhost
+        query: "SELECT * FROM failed_jobs WHERE channel='unique_test_channel_2'"
+        connection_string: "dbname=skycutter_development host=localhost user=vagrant"
     transition_conditions:
         - type: assertions.LengthEqual
           length: 1
@@ -59,7 +58,6 @@ version: "1"
         machine = TaskMachine(machine_dict=state_dict)
         self.assertEqual(machine.state, STATES.PENDING)
         engine = TaskEngine(machine)
-        import ipdb; ipdb.set_trace();
         result = engine.run()
         self.assertEqual(result, True)
 

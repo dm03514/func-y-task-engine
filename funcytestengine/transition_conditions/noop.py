@@ -1,9 +1,7 @@
+from .base import BaseTransitionCondition
 
 
-class NoopCondition(object):
-
-    def __init__(self, *args, **kwargs):
-        pass
+class NoopCondition(BaseTransitionCondition):
 
     def is_met(self, *args, **kwargs):
         return True

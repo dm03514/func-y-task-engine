@@ -1,6 +1,7 @@
+from .base import BaseTransitionCondition
 
 
-class LengthEqual(object):
+class LengthEqual(BaseTransitionCondition):
 
     def __init__(self, type, length):
         self.length = length

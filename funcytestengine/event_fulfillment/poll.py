@@ -1,11 +1,13 @@
 import gevent
 import logging
 
+from .base import BaseFulfillment
+
 
 logger = logging.getLogger(__name__)
 
 
-class PollerFulfillment(object):
+class PollerFulfillment(BaseFulfillment):
 
     def __init__(self, type, frequency_ms):
         self.running = False

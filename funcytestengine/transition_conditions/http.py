@@ -1,6 +1,7 @@
+from .base import BaseTransitionCondition
 
 
-class HTTPStatusCodeCondition(object):
+class HTTPStatusCodeCondition(BaseTransitionCondition):
 
     def __init__(self, type, status_code):
         self.status_code = status_code

@@ -1,7 +1,8 @@
 import gnsq
+from .base import BaseFulfillment
 
 
-class NSQStreamingFulfillment(object):
+class NSQStreamingFulfillment(BaseFulfillment):
 
     def __init__(self, type, topic, channel, address):
         self.topic = topic

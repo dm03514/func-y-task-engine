@@ -1,9 +1,7 @@
+from .base import BaseFulfillment
 
 
-class SingleFireFulfillment(object):
-
-    def __init__(self, *args, **kwargs):
-        pass
+class SingleFireFulfillment(BaseFulfillment):
 
     def run(self, initiator, conditions):
         return conditions.are_met(initiator.execute())

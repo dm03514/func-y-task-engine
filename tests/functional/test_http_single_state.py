@@ -5,6 +5,9 @@ from funcytestengine.engine import TaskEngine
 from funcytestengine.machine import TaskMachine, STATES
 
 
+from gevent import monkey; monkey.patch_all()
+
+
 class HTTPSingleStateTestCase(unittest.TestCase):
 
     def test_single_http_state_success(self):

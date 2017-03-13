@@ -2,7 +2,9 @@ import logging
 
 import sys
 
-ENGINE_LOOP_INTERVAL = 0.020
+from os import getenv
+
+ENGINE_LOOP_INTERVAL = float(getenv('ENGINE_LOOP_INTERVAL', 0.020))
 
 
 root = logging.getLogger()

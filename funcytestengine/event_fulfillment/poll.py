@@ -27,6 +27,14 @@ class PollerFulfillment(object):
                 'message': 'running poller loop'
             })
 
+            # need to asynchronously schedule initiator and poll for the result so that
+            # we can continually reschedule? Ugh this could get crazy
+            # how do we handle long connections?
+
+            # should this be synchronous? I think maybe
+
+            # If the initiator does not complete in the interval what happens?
+            # should it be killed?? and retried?
             if conditions.are_met(initiator.execute()):
                 logger.debug('%s', {
                     'message': 'poller condition met'

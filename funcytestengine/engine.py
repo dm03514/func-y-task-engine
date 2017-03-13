@@ -6,15 +6,12 @@ specific request types, response types, protocols, etc,
 
 adding a new initiator or
 """
-import time
-
 import gevent
 import logging
 from gevent.queue import Queue
 
 from funcytestengine import settings
-from funcytestengine.machine import STATES
-
+from funcytestengine.machine import STATES, EVENT_RESULT
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +20,7 @@ class TaskEngine(object):
 
     def __init__(self, machine):
         self.machine = machine
-        self.next_state_q = Queue(maxsize=1)
+        self.event_result_q = Queue(maxsize=1)
 
     def run(self):
         """
@@ -37,7 +34,7 @@ class TaskEngine(object):
         :return:
         """
         # apply the first state so we can follow event loop flow
-        self.next_state_q.put_nowait(self.machine.events.first_state())
+        self.event_result_q.put_nowait(self.machine.events.first_state())
 
         logger.debug('%s', {
             'message': 'sending_first_state',
@@ -52,7 +49,7 @@ class TaskEngine(object):
             try:
                 # we can ignore the next state, this is only used to indicate
                 # when it's time to apply a transition
-                _ = self.next_state_q.get(block=False)
+                result = self.event_result_q.get(block=False)
 
             except gevent.queue.Empty:
                 logger.debug('%s', {
@@ -60,6 +57,12 @@ class TaskEngine(object):
                 })
 
             else:
+                if result == EVENT_RESULT.FAILURE:
+                    logger.debug('%s', {
+                        'message': 'task_failure'
+                    })
+                    return False
+
                 logger.debug('%s', {
                     'message': 'state_change_requested',
                 })
@@ -72,7 +75,7 @@ class TaskEngine(object):
                     })
                     break
 
-                self.machine.run_current_event(next_state_q=self.next_state_q)
+                self.machine.run_current_event(event_result_q=self.event_result_q)
 
             gevent.sleep(settings.ENGINE_LOOP_INTERVAL)
 

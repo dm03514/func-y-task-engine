@@ -35,23 +35,23 @@ funcy aims to separate the task definition, from how it is executed, and how eac
 - Expose each state of each task executing
 - Each task execution is logged
 
-#### Execution Strategy
-- Wait
-- Poll
-- Subscribe
+- #### Execution Strategy
+    - Wait
+    - Poll
+    - Subscribe
 
-#### Transition Conditions
+- #### Transition Conditions
 
-#### Instructions
-- HTTP
-- RPC?
-- Message?
-- DB
+- #### Instructions
+    - HTTP
+    - RPC?
+    - Message?
+    - DB
 
 
+--------
+--------
 ## old alpha alpha thoughts
---------
---------
 Tasks are static and will be declared statically as a file.
 Tasks scheduling will be exposes as a restful service.
 

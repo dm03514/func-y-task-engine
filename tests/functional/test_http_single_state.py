@@ -1,7 +1,8 @@
 import unittest
 import yaml
 
-from funcytestengine.machine import TestMachine, STATES
+from funcytestengine.engine import TaskEngine
+from funcytestengine.machine import TaskMachine, STATES
 
 
 class HTTPSingleStateTestCase(unittest.TestCase):
@@ -30,5 +31,8 @@ name: single_http_request_test
 version: "1"
         """
         state_dict = yaml.load(HTTP_TEST)
-        machine = TestMachine(machine_dict=state_dict)
+        machine = TaskMachine(machine_dict=state_dict)
         self.assertEqual(machine.state, STATES.PENDING)
+        engine = TaskEngine(machine)
+        result = engine.run()
+        self.assertEqual(result, True)

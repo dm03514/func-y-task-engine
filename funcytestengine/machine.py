@@ -1,5 +1,6 @@
 from collections import namedtuple
 
+import gevent
 from transitions import Machine
 
 from funcytestengine.event_fulfillment import EventFulfillmentFactory
@@ -30,8 +31,18 @@ class Events(object):
     def states(self):
         return [e.name for e in self.events_list]
 
+    def first_state(self):
+        return self.states()[0]
 
-class TestMachine(object):
+    def teardown_current(self):
+        pass
+
+    def run(self, event_name, next_state_q):
+        gevent.sleep(0.5)
+        next_state_q.put('next_state')
+
+
+class TaskMachine(object):
 
     def __init__(self, machine_dict):
         # self.machine_dict = machine_dict
@@ -56,4 +67,16 @@ class TestMachine(object):
 
     # can event fulfillment strategy decorate?
     # noop strategy by default
+    def run_current_event(self, next_state_q):
+        """
+        Executes the current event, using the provided fulfilment strategy
+        until the transition conditions are met.
+
+        TODO, errors, timeouts, etc.
+
+        :param next_state_q:
+        :return:
+        """
+        # right now sleep then trigger completion
+        gevent.spawn(self.events.run, self.state, next_state_q)
 

@@ -1,7 +1,8 @@
 import unittest
 import yaml
 
-from funcytestengine.machine import TestMachine
+from funcytestengine.engine import TaskEngine
+from funcytestengine.machine import TaskMachine, STATES
 
 
 class MultiStateTestCase(unittest.TestCase):
@@ -10,52 +11,55 @@ class MultiStateTestCase(unittest.TestCase):
         TEST = """
 ---
 events:
-
   - name: publish_message
     initiator:
-      type: NSQ
+      type: nsq.NSQPublisherInitiator
       message: >
-      {
-            "attempts": 1,
-            "backtrace": [],
-            "worker": "PerformRaisesExceptionConsumer",
-            "topic": "test",
-            "host": "vagrant-ubuntu-trusty-64",
-            "process_id": 31616,
-            "payload": "testpayloadstring",
-            "exception": "Exception", "log": [],
-            "error_message": "Exception: ",
-            "retrying": True,
-            "channel": unique_test_channel_1
-      }
+          {
+                "attempts": 1,
+                "backtrace": [],
+                "worker": "PerformRaisesExceptionConsumer",
+                "topic": "test",
+                "host": "vagrant-ubuntu-trusty-64",
+                "process_id": 31616,
+                "payload": "testpayloadstring",
+                "exception": "Exception",
+                "log": [],
+                "error_message": "Exception: ",
+                "retrying": true,
+                "channel": "unique_test_channel_1"
+          }
+      nsqd_address: localhost
+      topic: test_topic
 
   - name: message_processed
     initiator:
-      type: NSQ_Reader
-      topic: test_topic
+      type: nsq.NSQReaderInitiator
+      topic: status_topic
       channel: test
       host_port: localhost:4150
-    transition_condition:
-       type: on_message
+    transition_conditions:
+        - type: nsq.NSQOnMessage
 
   - name: assert_message_in_postgres
     initiator:
-        type: postgres
+        type: postgres.SelectInitiator
         query: "SELECT COUNT(*) FROM failed_jobs WHERE channel='unique_test_channel_1'"
         username: vagrant
         host: localhost
-    event_fulfillment_strategy:
-       type: count
-       equal: 1
-       # instead of polling make a single assertion,
-       # as soon as this is executed
-       assertion: True
+    transition_conditions:
+        - type: assertions.LengthEqual
+          length: 1
 
 max_timeout: 10000
 name: NSQ_async_reader_postgres_assertion
 version: "1"
         """
         state_dict = yaml.load(TEST)
-        machine = TestMachine(machine_dict=state_dict)
-        # import ipdb; ipdb.set_trace();
+        machine = TaskMachine(machine_dict=state_dict)
+        self.assertEqual(machine.state, STATES.PENDING)
+        engine = TaskEngine(machine)
+        import ipdb; ipdb.set_trace();
+        result = engine.run()
+        self.assertEqual(result, True)
 

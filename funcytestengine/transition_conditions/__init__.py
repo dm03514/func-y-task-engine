@@ -20,3 +20,4 @@ class TransitionConditions(object):
         :return: boolean
         """
         return all(con.is_met(initiator_result) for con in self.conditions)
+

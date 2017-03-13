@@ -30,9 +30,9 @@ class EventResult(object):
 class Event(object):
     def __init__(self,
                  name,
-                 transition_conditions,
                  initiator,
-                 event_fulfillment_strategy=None,
+                 transition_conditions=[{'type': 'noop.NoopCondition'}],
+                 event_fulfillment_strategy={'type': 'noop.SingleFireFulfillment'},
                  timeout=FIVE_MINUTES):
         self.name = name
         self.initiator = InitiatorFactory.build(initiator)

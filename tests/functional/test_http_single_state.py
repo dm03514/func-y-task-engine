@@ -1,6 +1,8 @@
 import unittest
 import yaml
 
+from funcytestengine.machine import TestMachine, STATES
+
 
 class HTTPSingleStateTestCase(unittest.TestCase):
 
@@ -12,20 +14,21 @@ class HTTPSingleStateTestCase(unittest.TestCase):
         HTTP_TEST = """
 ---
 events:
-  google_request:
+  - name: google_request
     event_fulfillment_strategy:
-       type: poll
+       type: poll.PollerFulfillment
        frequency_ms: 200
-    transition_condition:
-      type: HTTP
-      status_code: 200
+    transition_conditions:
+      - type: http.HTTPCondition
+        status_code: 200
     initiator:
       method: GET
-      type: HTTP
+      type: http.HTTPInitiator
       url: "http://google.com"
 max_timeout: 240000
 name: single_http_request_test
 version: "1"
         """
-        parsed_yaml = yaml.load(HTTP_TEST)
-        import ipdb; ipdb.set_trace();
+        state_dict = yaml.load(HTTP_TEST)
+        machine = TestMachine(machine_dict=state_dict)
+        self.assertEqual(machine.state, STATES.PENDING)

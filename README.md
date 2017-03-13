@@ -1,43 +1,56 @@
-# async-states-task-engine
+# Functional (funcy) Task Engine
+
 An asynchronous task execution framework.  
 Allows for modeling of tasks as statemachines, using a delcaritive yaml syntax.
 Schedules, executes instructions, applies task state transitions, and reports on task statuses.
 
-## Tasks
+## Problem
+Writing reliable function tests are hard.  They often involve multiple protocols, multiple systems, waiting, and asyncronous systems.
+funcy aims to separate the task definition, from how it is executed, and how each step of the task is transitioned.  It should allow for complex multi-step functional tests, often involving concurrent opertations, to be statically defined as a list of state definitions.
+
+## Goals
+- Provide Simple Easy Task definition
+- Provide module plugin system which easily allows addition of new service clients
+- Auditable
+
+## Components
+
+### Tasks
 - Modeled as a State machine
 - Declared as a yaml file
-- Declares all states
-- Defines legal transitions
-- Declares transition conditions
-- Define the entry state
+- Declares all states (events)
+- Declares transition (fulfillment) conditions
 - Define execution instructions for each state
 
-## Execution engine (framework)
+### Execution engine (framework)
 - Schedules tasks
 - Monitors task states
 - Checks for condition fulfilment
-- Applies transitions 
+- Applies transitions
+- Execution engine needs to potentially keep track of multiple tasks being executed, and all potentially may be in different states
+- Provides both programmatic and visual interfaces to schedule, run, monitor, and report on tasks
 
-### State
-- Execution engine needs to keep track of multiple tasks being executed, and all potentially may be in different states
-- Expose a list of all tasks executing
+### State (Event)
+- Tasks are FSM
 - Expose each state of each task executing
-- Historic results (what retention policy?)
 - Each task execution is logged
-  - Each state transition in the task is logged
 
-### Conditions
+#### Execution Strategy
 - Wait
 - Poll
 - Subscribe
 
-### Instructions
+#### Transition Conditions
+
+#### Instructions
 - HTTP
 - RPC?
 - Message?
 - DB
 
 
+## old alpha alpha thoughts
+--------
 --------
 Tasks are static and will be declared statically as a file.
 Tasks scheduling will be exposes as a restful service.

@@ -20,10 +20,10 @@ events:
        type: poll.PollerFulfillment
        frequency_ms: 200
     transition_conditions:
-      - type: http.HTTPCondition
+      - type: http.HTTPStatusCodeCondition
         status_code: 200
     initiator:
-      method: GET
+      method: get
       type: http.HTTPInitiator
       url: "http://google.com"
 max_timeout: 240000

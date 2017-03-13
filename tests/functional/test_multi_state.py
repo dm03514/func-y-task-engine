@@ -57,5 +57,5 @@ version: "1"
         """
         state_dict = yaml.load(TEST)
         machine = TestMachine(machine_dict=state_dict)
-        import ipdb; ipdb.set_trace();
+        # import ipdb; ipdb.set_trace();
 

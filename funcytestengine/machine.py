@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 import gevent
 from transitions import Machine
@@ -23,13 +23,21 @@ class Event(object):
         self.fulfillment = EventFulfillmentFactory.build(event_fulfillment_strategy)
         self.conditions = TransitionConditions(config_conditions=transition_conditions)
 
+    def execute(self):
+        """
+        Runs the fulfillment strategy on the initiator until the conditions are met.
+
+        :return:
+        """
+        self.fulfillment.run(self.initiator, self.conditions)
+
 
 class Events(object):
     def __init__(self, events_list):
-        self.events_list = events_list
+        self.events_dict = OrderedDict([(e.name, e) for e in events_list])
 
     def states(self):
-        return [e.name for e in self.events_list]
+        return self.events_dict.keys()
 
     def first_state(self):
         return self.states()[0]
@@ -38,8 +46,15 @@ class Events(object):
         pass
 
     def run(self, event_name, next_state_q):
-        gevent.sleep(0.5)
-        next_state_q.put('next_state')
+        # TODO per event timeout
+        # get the current event,
+        event = self.events_dict[event_name]
+        try:
+            event.execute()
+        except:
+            import ipdb; ipdb.set_trace();
+        else:
+            next_state_q.put('next_state')
 
 
 class TaskMachine(object):

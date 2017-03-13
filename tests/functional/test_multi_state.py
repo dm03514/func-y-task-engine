@@ -33,11 +33,11 @@ events:
       topic: test_topic
 
   - name: message_processed
-    initiator:
-      type: nsq.NSQReaderInitiator
+    event_fulfillment_strategy:
+      type: nsq.NSQStreamingFulfillment
       topic: status_topic
       channel: test
-      host_port: localhost:4150
+      address: "localhost:4150"
     transition_conditions:
         - type: nsq.NSQOnMessage
 

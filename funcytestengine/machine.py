@@ -30,7 +30,7 @@ class EventResult(object):
 class Event(object):
     def __init__(self,
                  name,
-                 initiator,
+                 initiator={'type': 'noop.NoopInitiator'},
                  transition_conditions=[{'type': 'noop.NoopCondition'}],
                  event_fulfillment_strategy={'type': 'noop.SingleFireFulfillment'},
                  timeout=FIVE_MINUTES):

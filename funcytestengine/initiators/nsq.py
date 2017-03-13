@@ -28,11 +28,3 @@ class NSQPublisherInitiator(BaseInitiator):
             json.dumps(self.message)
         )
 
-
-class NSQReaderInitiator(BaseInitiator):
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def execute(self):
-        pass

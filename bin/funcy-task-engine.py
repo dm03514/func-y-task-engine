@@ -1,22 +1,24 @@
-import yaml
-from nose import run
-from nose.loader import TestLoader
+import argparse
 
-from parameterized import parameterized
+from funcytestengine.unittesttaskexecutor import UnittestTaskExecutor
 
-import funcytestengine
-from funcytestengine.unittesttaskexecutor import test_main
 
+def run(arguments):
+    ute = UnittestTaskExecutor(arguments)
+    ute.run()
 
 
 if __name__ == '__main__':
-    p = parameterized([
-        ('tests/fixtures/simple_http_test.yml',),
-        ('tests/fixtures/multi_state_test.yml',),
-    ])
-    test = p(test_main)
+    parser = argparse.ArgumentParser(description='Func-y Task Engine!')
+    subparsers = parser.add_subparsers(help='subparser help')
 
-    suite = TestLoader().loadTestsFromGenerator(
-        test, funcytestengine.unittesttaskexecutor)
+    run_parser = subparsers.add_parser('run', help='run help')
+    run_parser.add_argument(
+        '-c', '--config', type=str, default='.func-y-test.yml', dest='config')
+    run_parser.add_argument(
+        '-t', '--test', type=str, default=None, dest='single_test')
+    run_parser.set_defaults(func=run)
 
-    run(argv=['-s'], suite=suite)
+    args = parser.parse_args()
+    args.func(args)
+

@@ -17,6 +17,8 @@ if __name__ == '__main__':
         '-c', '--config', type=str, default='.func-y-test.yml', dest='config')
     run_parser.add_argument(
         '-t', '--test', type=str, default=None, dest='single_test')
+    run_parser.add_argument(
+        '-rt', '--root-dir', type=str, default='', dest='root_dir')
     run_parser.set_defaults(func=run)
 
     args = parser.parse_args()

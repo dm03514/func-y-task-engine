@@ -7,10 +7,32 @@ from nose.loader import TestLoader
 
 from parameterized import parameterized
 
+from funcytestengine.templateprocessors.unique import UUIDStringTemplateProcessor
+
+TEMPLATE_PROCESSORS = [
+    UUIDStringTemplateProcessor()
+]
+
 
 def test_main(file_name):
+    """
+    Executes the task as a python unittest.
+
+    Applies all template preprocessors,
+    then parses the template
+    executes the template
+    reports the result of the task.
+
+    :param file_name:
+    :return:
+    """
     with open(file_name) as f:
-        state_dict = yaml.load(f)
+        task_template = f.read()
+
+    for processor in TEMPLATE_PROCESSORS:
+        task_template = processor.substitute(task_template)
+
+    state_dict = yaml.load(task_template)
 
     machine = TaskMachine(machine_dict=state_dict)
     assert machine.state == STATES.PENDING
@@ -38,4 +60,4 @@ class UnittestTaskExecutor(object):
         suite = TestLoader().loadTestsFromGenerator(
             test, __name__)
 
-        run(argv=['-s'], suite=suite)
+        run(argv=['', '-s'], suite=suite)

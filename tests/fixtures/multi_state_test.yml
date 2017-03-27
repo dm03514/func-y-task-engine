@@ -1,14 +1,3 @@
-import unittest
-import yaml
-
-from funcytestengine.engine import TaskEngine
-from funcytestengine.machine import TaskMachine, STATES
-
-
-class MultiStateTestCase(unittest.TestCase):
-
-    def test_multi_state_nsq_http(self):
-        TEST = """
 ---
 events:
   - name: publish_message
@@ -53,11 +42,3 @@ events:
 max_timeout: 2000
 name: NSQ_async_reader_postgres_assertion
 version: "1"
-        """
-        state_dict = yaml.load(TEST)
-        machine = TaskMachine(machine_dict=state_dict)
-        self.assertEqual(machine.state, STATES.PENDING)
-        engine = TaskEngine(machine)
-        result = engine.run()
-        self.assertEqual(result, True)
-

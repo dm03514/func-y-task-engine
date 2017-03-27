@@ -1,0 +1,22 @@
+@startuml
+
+[*] --> running :run
+
+
+state running {
+    loop --> [*] : event_failed
+    loop --> next_state : event_success
+    next_state --> [*] : 'finished' state reach
+    next_state --> event :  start_event
+    state event {
+
+    }
+    event --> loop : event_complete
+
+}
+
+
+
+running --> [*]
+
+@enduml

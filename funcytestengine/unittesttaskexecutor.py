@@ -7,8 +7,11 @@ from nose.loader import TestLoader
 
 from parameterized import parameterized
 
+from funcytestengine.templateprocessors.unique import UUIDStringTemplateProcessor
 
-TEMPLATE_PROCESSORS = []
+TEMPLATE_PROCESSORS = [
+    UUIDStringTemplateProcessor()
+]
 
 
 def test_main(file_name):
@@ -57,4 +60,4 @@ class UnittestTaskExecutor(object):
         suite = TestLoader().loadTestsFromGenerator(
             test, __name__)
 
-        run(argv=['-s'], suite=suite)
+        run(argv=['', '-s'], suite=suite)

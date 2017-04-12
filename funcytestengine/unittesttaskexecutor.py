@@ -1,7 +1,14 @@
+import glob
+import unittest
+from functools import partial
+
+import os
+
 from funcytestengine.engine import TaskEngine
 from funcytestengine.machine import TaskMachine, STATES
 
 import yaml
+import xmlrunner
 from nose import run
 from nose.loader import TestLoader
 
@@ -14,7 +21,7 @@ TEMPLATE_PROCESSORS = [
 ]
 
 
-def test_main(file_name):
+def test_individual(file_name):
     """
     Executes the task as a python unittest.
 
@@ -42,22 +49,50 @@ def test_main(file_name):
     print(state_dict)
 
 
+class ConfigTestLoader(object):
+    def __init__(self, root_dir, config_file):
+        self.root_dir = root_dir
+        self.config_file = config_file
+
+    def file_path(self):
+        return os.path.join(self.root_dir, self.config_file)
+
+    def tests(self):
+        with open(self.file_path()) as f:
+            config_dict = yaml.load(f)
+
+        tests_to_execute = []
+        for test in config_dict['tests']:
+            globbed = glob.glob(test)
+            if globbed:
+                tests_to_execute.extend(globbed)
+            else:
+                tests_to_execute.append(test)
+        return tests_to_execute
+
+
 class UnittestTaskExecutor(object):
+
     def __init__(self, arguments):
-        self.config = arguments.config
+        self.config_loader = ConfigTestLoader(
+            arguments.root_dir,
+            arguments.config
+        )
         self.single_test = arguments.single_test
 
     def tests_to_run(self):
         if self.single_test:
             return [self.single_test]
 
-        raise NotImplementedError()
+        return self.config_loader.tests()
+
+    def clean_names(self, tests):
+        return tests
 
     def run(self):
-        p = parameterized(self.tests_to_run())
-        test = p(test_main)
+        p = parameterized(self.clean_names(self.tests_to_run()))
+        test_main = p(test_individual)
+        suite = TestLoader().loadTestsFromGenerator(test_main, __name__)
+        testRunner = xmlrunner.XMLTestRunner(output='test-reports')
+        testRunner.run(suite)
 
-        suite = TestLoader().loadTestsFromGenerator(
-            test, __name__)
-
-        run(argv=['', '-s'], suite=suite)

@@ -1,5 +1,6 @@
 import glob
 import unittest
+from functools import partial
 
 import os
 
@@ -7,6 +8,7 @@ from funcytestengine.engine import TaskEngine
 from funcytestengine.machine import TaskMachine, STATES
 
 import yaml
+import xmlrunner
 from nose import run
 from nose.loader import TestLoader
 
@@ -19,11 +21,7 @@ TEMPLATE_PROCESSORS = [
 ]
 
 
-class Test(unittest.TestCase):
-    pass
-
-
-def test_main(file_name):
+def test_individual(file_name):
     """
     Executes the task as a python unittest.
 
@@ -76,7 +74,10 @@ class ConfigTestLoader(object):
 class UnittestTaskExecutor(object):
 
     def __init__(self, arguments):
-        self.config_loader = ConfigTestLoader(arguments.root_dir, arguments.config)
+        self.config_loader = ConfigTestLoader(
+            arguments.root_dir,
+            arguments.config
+        )
         self.single_test = arguments.single_test
 
     def tests_to_run(self):
@@ -87,13 +88,11 @@ class UnittestTaskExecutor(object):
 
     def clean_names(self, tests):
         return tests
-        return [t.replace('/', '').replace('.', '') for t in tests]
 
     def run(self):
         p = parameterized(self.clean_names(self.tests_to_run()))
-        test = p(test_main)
+        test_main = p(test_individual)
+        suite = TestLoader().loadTestsFromGenerator(test_main, __name__)
+        testRunner = xmlrunner.XMLTestRunner(output='test-reports')
+        testRunner.run(suite)
 
-        suite = TestLoader().loadTestsFromGenerator(
-            test, __name__)
-
-        run(argv=['', '-s', '-v', '2', '--with-xunit'], suite=suite)

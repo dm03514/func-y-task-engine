@@ -1,4 +1,4 @@
-from funcytestengine.parsers.loaders import DynamicConfigLoader
+from funcytaskengine.parsers.loaders import DynamicConfigLoader
 
 
 class EventFulfillmentFactory(DynamicConfigLoader):

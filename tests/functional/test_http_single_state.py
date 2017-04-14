@@ -1,8 +1,8 @@
 import unittest
 import yaml
 
-from funcytestengine.engine import TaskEngine
-from funcytestengine.machine import TaskMachine, STATES
+from funcytaskengine.engine import TaskEngine
+from funcytaskengine.machine import TaskMachine, STATES
 
 
 from gevent import monkey; monkey.patch_all()

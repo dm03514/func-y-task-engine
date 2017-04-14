@@ -10,8 +10,8 @@ import gevent
 import logging
 from gevent.queue import Queue
 
-from funcytestengine import settings
-from funcytestengine.machine import STATES, EVENT_RESULT
+from funcytaskengine import settings
+from funcytaskengine.machine import STATES, EVENT_RESULT
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import requests
 
-from funcytestengine.initiators.base import BaseInitiator
+from funcytaskengine.initiators.base import BaseInitiator
 
 
 class HTTPInitiator(BaseInitiator):

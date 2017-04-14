@@ -6,11 +6,11 @@ import logging
 from gevent import Timeout
 from transitions import Machine
 
-from funcytestengine.event_fulfillment import EventFulfillmentFactory
-from funcytestengine.initiators import InitiatorFactory
+from funcytaskengine.event_fulfillment import EventFulfillmentFactory
+from funcytaskengine.initiators import InitiatorFactory
 
 ### This file needs to generically operation on ANY subclasses
-from funcytestengine.transition_conditions import TransitionConditions
+from funcytaskengine.transition_conditions import TransitionConditions
 
 STATES = namedtuple('States', ['PENDING', 'FINISHED'])('pending', 'finished')
 EVENT_RESULT = namedtuple('EventResult', ['SUCCESS', 'FAILURE'])('success', 'failure')

@@ -4,8 +4,8 @@ from functools import partial
 
 import os
 
-from funcytestengine.engine import TaskEngine
-from funcytestengine.machine import TaskMachine, STATES
+from funcytaskengine.engine import TaskEngine
+from funcytaskengine.machine import TaskMachine, STATES
 
 import yaml
 import xmlrunner
@@ -14,7 +14,7 @@ from nose.loader import TestLoader
 
 from parameterized import parameterized
 
-from funcytestengine.templateprocessors.unique import UUIDStringTemplateProcessor
+from funcytaskengine.templateprocessors.unique import UUIDStringTemplateProcessor
 
 TEMPLATE_PROCESSORS = [
     UUIDStringTemplateProcessor()

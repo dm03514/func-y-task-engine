@@ -1,6 +1,6 @@
 import psycopg2
 
-from funcytestengine.initiators.base import BaseInitiator
+from funcytaskengine.initiators.base import BaseInitiator
 
 
 class SelectInitiator(BaseInitiator):

@@ -1,6 +1,6 @@
 import uuid
 
-from funcytestengine.templateprocessors.base import BaseTemplateProcessor
+from funcytaskengine.templateprocessors.base import BaseTemplateProcessor
 
 
 class UUIDStringTemplateProcessor(BaseTemplateProcessor):

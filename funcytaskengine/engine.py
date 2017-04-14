@@ -8,6 +8,8 @@ adding a new initiator or
 """
 import gevent
 import logging
+
+from gevent import Timeout
 from gevent.queue import Queue
 
 from funcytaskengine import settings
@@ -42,42 +44,56 @@ class TaskEngine(object):
         })
 
         # TODO APPLY GLOBAL TIMEOUT
+        timeout = Timeout(self.machine.max_timeout)
+        timeout.start()
+        try:
 
-        while self.machine.is_running():
-            # how do we support a general overarching timeout
-            # and a specific one for the current running event
-            try:
-                # we can ignore the next state, this is only used to indicate
-                # when it's time to apply a transition
-                result = self.event_result_q.get(block=False)
+            while self.machine.is_running():
+                # how do we support a general overarching timeout
+                # and a specific one for the current running event
+                try:
+                    # we can ignore the next state, this is only used to indicate
+                    # when it's time to apply a transition
+                    result = self.event_result_q.get(block=False)
 
-            except gevent.queue.Empty:
-                logger.debug('%s', {
-                    'message': 'queue_empty',
-                })
-
-            else:
-                if result == EVENT_RESULT.FAILURE:
+                except gevent.queue.Empty:
                     logger.debug('%s', {
-                        'message': 'task_failure'
+                        'message': 'queue_empty',
                     })
-                    return False
 
-                logger.debug('%s', {
-                    'message': 'state_change_requested',
-                })
-                self.machine.events.teardown_current()
-                self.machine.next_state()
+                else:
+                    if result == EVENT_RESULT.FAILURE:
+                        logger.debug('%s', {
+                            'message': 'task_failure'
+                        })
+                        return False
 
-                if self.machine.state == STATES.FINISHED:
                     logger.debug('%s', {
-                        'message': 'task_execution_finished',
+                        'message': 'state_change_requested',
                     })
-                    break
+                    self.machine.events.teardown_current()
+                    self.machine.next_state()
 
-                self.machine.run_current_event(event_result_q=self.event_result_q)
+                    if self.machine.state == STATES.FINISHED:
+                        logger.debug('%s', {
+                            'message': 'task_execution_finished',
+                        })
+                        return True
 
-            gevent.sleep(settings.ENGINE_LOOP_INTERVAL)
+                    self.machine.run_current_event(event_result_q=self.event_result_q)
+
+                gevent.sleep(settings.ENGINE_LOOP_INTERVAL)
+
+        except Timeout:
+            logger.error('%s', {
+                'message': 'task timeout reached',
+                'timeout': self.machine.max_timeout,
+                'units': 'seconds'
+            })
+            return False
+
+        finally:
+            timeout.cancel()
 
         return True
 

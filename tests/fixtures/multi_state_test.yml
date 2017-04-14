@@ -39,6 +39,6 @@ events:
         - type: assertions.LengthEqual
           length: 1
 
-max_timeout: 1
+max_timeout: 2
 name: NSQ_async_reader_postgres_assertion
 version: "1"

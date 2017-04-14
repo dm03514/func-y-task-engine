@@ -1,6 +1,4 @@
 import glob
-import unittest
-from functools import partial
 
 import os
 
@@ -9,8 +7,8 @@ from funcytaskengine.machine import TaskMachine, STATES
 
 import yaml
 import xmlrunner
-from nose import run
 from nose.loader import TestLoader
+from gevent import monkey
 
 from parameterized import parameterized
 
@@ -71,7 +69,7 @@ class ConfigTestLoader(object):
         return tests_to_execute
 
 
-class UnittestTaskExecutor(object):
+class TaskExecutor(object):
 
     def __init__(self, arguments):
         self.config_loader = ConfigTestLoader(
@@ -79,6 +77,8 @@ class UnittestTaskExecutor(object):
             arguments.config
         )
         self.single_test = arguments.single_test
+
+        monkey.patch_all()
 
     def tests_to_run(self):
         if self.single_test:
@@ -89,10 +89,24 @@ class UnittestTaskExecutor(object):
     def clean_names(self, tests):
         return tests
 
-    def run(self):
+    def xmltest(self):
+        """
+        Runs each specified tests by using python unittest to execute
+        and reports results through stdout and junit xml format.
+
+        :return:
+        """
         p = parameterized(self.clean_names(self.tests_to_run()))
         test_main = p(test_individual)
         suite = TestLoader().loadTestsFromGenerator(test_main, __name__)
         testRunner = xmlrunner.XMLTestRunner(output='test-reports')
         testRunner.run(suite)
 
+    def run(self):
+        """
+        Runs the specified test files by calling them directly.
+
+        :return:
+        """
+        for test_file in self.tests_to_run():
+            test_individual(test_file)

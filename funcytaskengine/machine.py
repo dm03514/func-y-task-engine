@@ -91,7 +91,7 @@ class TaskMachine(object):
             initial=STATES.PENDING
         )
         self.machine.add_ordered_transitions()
-        self.max_timeout = machine_dict.get('max_timeout', FIVE_MINUTES * 1000)
+        self.max_timeout = machine_dict.get('max_timeout', FIVE_MINUTES)
 
     def states(self):
         pre_states = [STATES.PENDING]

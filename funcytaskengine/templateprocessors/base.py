@@ -13,7 +13,7 @@ class BaseTemplateProcessor(object):
         return None
 
     @abstractmethod
-    def generate_value(self):
+    def substitute_value(self, template_str, match):
         pass
 
     def variables(self, template_str):
@@ -24,15 +24,14 @@ class BaseTemplateProcessor(object):
         """
         match = self.matcher.search(template_str)
         if match:
-            return [match.group(0)]
+            return [match]
 
         return []
 
     def substitute(self, template_str):
-        # get all variables which needs substituting
 
-        for variable in self.variables(template_str):
-            template_str = template_str.replace(variable, self.generate_value())
+        for match in self.variables(template_str):
+            template_str = self.substitute_value(template_str, match)
 
         return template_str
 

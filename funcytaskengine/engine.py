@@ -43,7 +43,6 @@ class TaskEngine(object):
             'first_state': self.machine.events.first_state()
         })
 
-        # TODO APPLY GLOBAL TIMEOUT
         timeout = Timeout(self.machine.max_timeout)
         timeout.start()
         try:

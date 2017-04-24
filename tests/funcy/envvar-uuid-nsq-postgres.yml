@@ -1,0 +1,49 @@
+---
+max_timeout: 100000000000
+name: ENVVAR_UUID_nsq_postgres_assertions
+version: "1"
+events:
+
+  - name: create_nsq_topic
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/create?topic=funcy_task"
+
+  - name: publish_message
+    initiator:
+      type: nsq.NSQPublisherInitiator
+      message: >
+          {
+                "key1": "really_cool_message",
+                "key2": "really_cool_message_2"
+          }
+      nsqd_address: localhost
+      topic: "funcy_task"
+
+  - name: pull_single_message
+    event_fulfillment_strategy:
+      type: nsq.NSQStreamingFulfillment
+      topic: funcy_task
+      channel: test
+      address: "localhost:4150"
+    transition_conditions:
+        - type: nsq.NSQOnMessage
+
+  - name: insert_article_into_postgres
+    initiator:
+        type: postgres.QueryInitiator
+        query: >
+          INSERT INTO article (article_name, article_desc)
+          VALUES ('test', '$UUID_STRING_1')
+        connection_string: "dbname=postgres host=localhost user=postgres"
+
+  - name: assert_message_in_postgres
+    initiator:
+        type: postgres.SelectInitiator
+        query: >
+          SELECT * FROM article WHERE article_desc='$UUID_STRING_1'
+        connection_string: "dbname=postgres host=localhost user=postgres"
+    transition_conditions:
+        - type: assertions.LengthEqual
+          length: 1

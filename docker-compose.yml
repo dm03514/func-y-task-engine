@@ -1,21 +1,21 @@
 version: '2'
 services:
   nsqlookupd:
-    image: nsqio/nsq
+    image: nsqio/nsq:v0.3.8
     command: /nsqlookupd
     container_name: nsqlookupd
     ports:
       - "4160"
       - "4161:4161"
   nsqd:
-    image: nsqio/nsq
-    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160 -broadcast-address=${NSQD_BROADCAST_ADDRESS}
+    image: nsqio/nsq:v0.3.8
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
     container_name: nsqd
     ports:
       - "4150:4150"
       - "4151:4151"
   nsqadmin:
-    image: nsqio/nsq
+    image: nsqio/nsq:v0.3.8
     command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
     container_name: nsqadmin
     ports:
@@ -25,5 +25,5 @@ services:
     container_name: postgres
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_USER=${USER}
+    volumes:
+      - ./tests/fixtures/postgres:/docker-entrypoint-initdb.d

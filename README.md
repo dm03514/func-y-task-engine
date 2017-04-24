@@ -30,3 +30,13 @@ defined as a list of state definitions.
 ## Use cases
 - Functional/e2e live in service repo along side code
 - SLA e2e latencies (future API release)
+
+
+# Getting Started
+
+Right now the easiest way to see how func-y task engine works may be to read the
+tutorial.
+
+https://github.com/dm03514/func-y-task-engine/wiki/Tutorial---Creating-a-Task
+
+More in depth documentation to come.

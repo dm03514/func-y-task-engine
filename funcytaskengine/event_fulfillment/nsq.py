@@ -25,6 +25,9 @@ class NSQStreamingFulfillment(BaseFulfillment):
 
         @reader.on_message.connect
         def handler(_r, message):
+
+            message.finish()
+
             if conditions.are_met(message):
                 _r.close()
 

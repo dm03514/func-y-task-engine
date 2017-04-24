@@ -1,5 +1,5 @@
 ---
 tests:
-  - "tests/fixtures/multi_state_test.yml"
+  - "tests/fixtures/simple_http_test.yml"
   - "tests/fixtures/simple_http_test.yml"
 

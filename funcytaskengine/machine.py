@@ -40,19 +40,22 @@ class Event(object):
         self.conditions = TransitionConditions(config_conditions=transition_conditions)
         self.timeout = timeout
 
-    def execute(self):
+    def execute(self, **kwargs):
         """
         Runs the fulfillment strategy on the initiator until the conditions are met.
 
         :return:
         """
         with gevent.Timeout(self.timeout):
-            return self.fulfillment.run(self.initiator, self.conditions)
+            return self.fulfillment.run(self.initiator, self.conditions, **kwargs)
 
 
 class Events(object):
     def __init__(self, events_list):
         self.events_dict = OrderedDict([(e.name, e) for e in events_list])
+        # stores the return value of each of the events
+        # not sure how this will be formalized....
+        self.event_return_values = {}
 
     def states(self):
         return self.events_dict.keys()
@@ -67,8 +70,13 @@ class Events(object):
         # TODO per event timeout
         # get the current event,
         event = self.events_dict[event_name]
+
+        self.event_return_values[event_name] = None
+
         try:
-            event.execute()
+            self.event_return_values[event_name] = event.execute(
+                event_return_values=self.event_return_values
+            )
         except (Exception, Timeout) as e:
             logger.error('%s', {
                 'message': 'event_execution_error',

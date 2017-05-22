@@ -6,4 +6,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     # install_requires=INSTALL_REQUIRES,
+    scripts=['bin/funcy-task-engine.py']
 )

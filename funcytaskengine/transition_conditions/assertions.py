@@ -1,3 +1,5 @@
+import json
+
 from .base import BaseTransitionCondition
 
 
@@ -10,3 +12,9 @@ class LengthEqual(BaseTransitionCondition):
         assert len(collection) == self.length, 'collection ({}) != expected ({})'.format(
             len(collection), self.length
         )
+
+
+class ParseJSON(BaseTransitionCondition):
+
+    def is_met(self, value):
+        return json.loads(value)

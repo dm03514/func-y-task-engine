@@ -14,4 +14,4 @@ class NSQOnMessage(BaseTransitionCondition):
         :return: boolean
         """
         if message:
-            return True
+            return message.body

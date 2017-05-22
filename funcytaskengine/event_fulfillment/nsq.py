@@ -9,7 +9,7 @@ class NSQStreamingFulfillment(BaseFulfillment):
         self.channel = channel
         self.address = address
 
-    def run(self, initiator, conditions):
+    def run(self, initiator, conditions, **kwargs):
         """
         Connects to NSQd instance specified by address, and evaluates
         the conditions against every message received.

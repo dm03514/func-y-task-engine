@@ -6,5 +6,6 @@ parameterized==0.6.1
 requests==2.13.0
 gnsq==0.3.3
 psycopg2==2.7.1
+unittest-xml-reporting==2.1.0
 
 mock==2.0.0

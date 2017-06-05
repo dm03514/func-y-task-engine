@@ -66,6 +66,9 @@ class Events(object):
     def teardown_current(self):
         pass
 
+    def return_value(self, event_name):
+        return self.event_return_values[event_name]
+
     def run(self, event_name, event_result_q):
         # TODO per event timeout
         # get the current event,
@@ -75,7 +78,7 @@ class Events(object):
 
         try:
             self.event_return_values[event_name] = event.execute(
-                event_return_values=self.event_return_values
+                events=self
             )
         except (Exception, Timeout) as e:
             logger.error('%s', {

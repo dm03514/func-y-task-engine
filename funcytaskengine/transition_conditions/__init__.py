@@ -19,5 +19,5 @@ class TransitionConditions(object):
         :param initiator_result:
         :return: boolean
         """
-        return [con.is_met(initiator_result) for con in self.conditions]
+        return all([con.is_met(initiator_result) for con in self.conditions])
 

@@ -11,13 +11,29 @@ class TransitionConditions(object):
         self.conditions = [
             TransitionConditionFactory.build(cc) for cc in config_conditions
         ]
+        self.intialized = False
+        self.vs = None
 
-    def are_met(self, initiator_result):
+    def initialize(self, vs):
+        self.initialized = True
+        self.vs = vs
+
+    def values(self):
+        return self.vs
+
+    def are_met(self):
         """
-        Checks to see if all the conditions have been met.
+        Checks to see if all the conditions have been met, against the values.
 
-        :param initiator_result:
+        Mutates the values with the return value of each condition being applied.
+        Allows for a transformation, so that the values can be used for other
+        event states.
+
         :return: boolean
         """
-        return all(con.is_met(initiator_result) for con in self.conditions)
+        assert self.initialized
 
+        for con in self.conditions:
+            self.vs = con.is_met(self.vs)
+
+        return bool(self.vs)

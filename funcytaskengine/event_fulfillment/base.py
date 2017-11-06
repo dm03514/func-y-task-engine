@@ -8,5 +8,5 @@ class BaseFulfillment(object):
         pass
 
     @abstractmethod
-    def run(self, initiator, conditions):
+    def run(self, initiator, conditions, **kwargs):
         pass

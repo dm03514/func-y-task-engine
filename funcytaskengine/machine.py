@@ -7,6 +7,7 @@ from gevent import Timeout
 from transitions import Machine
 
 from funcytaskengine.event_fulfillment import EventFulfillmentFactory
+from funcytaskengine.event_fulfillment.return_values import EventResults
 from funcytaskengine.initiators import InitiatorFactory
 
 ### This file needs to generically operation on ANY subclasses
@@ -40,19 +41,24 @@ class Event(object):
         self.conditions = TransitionConditions(config_conditions=transition_conditions)
         self.timeout = timeout
 
-    def execute(self):
+    def execute(self, **kwargs):
         """
         Runs the fulfillment strategy on the initiator until the conditions are met.
 
         :return:
         """
         with gevent.Timeout(self.timeout):
-            return self.fulfillment.run(self.initiator, self.conditions)
+            result = self.fulfillment.run(self.initiator, self.conditions, **kwargs)
+            result.event_name = self.name
+            return result
 
 
 class Events(object):
     def __init__(self, events_list):
         self.events_dict = OrderedDict([(e.name, e) for e in events_list])
+        # stores the return value of each of the events
+        # not sure how this will be formalized....
+        self.event_results = EventResults()
 
     def states(self):
         return self.events_dict.keys()
@@ -64,20 +70,38 @@ class Events(object):
         pass
 
     def run(self, event_name, event_result_q):
-        # TODO per event timeout
-        # get the current event,
+        """
+        Execute an individual event.
+
+        Success:
+            - return a result with 'success' = True
+
+        Failure:
+            - Raise an exception
+            - Timeout
+            - Return Result with 'success' = False
+
+        :param event_name:
+        :param event_result_q:
+        :return:
+        """
         event = self.events_dict[event_name]
+
         try:
-            event.execute()
+            result = event.execute(
+                event_results=self.event_results
+            )
+            self.event_results.add(result)
+
         except (Exception, Timeout) as e:
             logger.error('%s', {
                 'message': 'event_execution_error',
                 'exception': e,
                 'event_name': event_name
             })
-            event_result_q.put(EVENT_RESULT.FAILURE)
-        else:
-            event_result_q.put(EVENT_RESULT.SUCCESS)
+            return event_result_q.put(EVENT_RESULT.FAILURE)
+
+        event_result_q.put(result.success())
 
 
 class TaskMachine(object):

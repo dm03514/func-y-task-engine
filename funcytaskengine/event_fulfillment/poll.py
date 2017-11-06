@@ -13,7 +13,7 @@ class PollerFulfillment(BaseFulfillment):
         self.running = False
         self.interval = 1000 / frequency_ms
 
-    def run(self, initiator, conditions):
+    def run(self, initiator, conditions, **kwargs):
         """
         Decorates an initiator function and runs it in a loop?
 

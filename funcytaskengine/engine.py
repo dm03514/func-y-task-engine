@@ -53,7 +53,7 @@ class TaskEngine(object):
                 try:
                     # we can ignore the next state, this is only used to indicate
                     # when it's time to apply a transition
-                    result = self.event_result_q.get(block=False)
+                    result = self.event_result_q.get()
 
                 except gevent.queue.Empty:
                     logger.debug('%s', {
@@ -80,8 +80,6 @@ class TaskEngine(object):
                         return True
 
                     self.machine.run_current_event(event_result_q=self.event_result_q)
-
-                gevent.sleep(settings.ENGINE_LOOP_INTERVAL)
 
         except Timeout:
             logger.error('%s', {

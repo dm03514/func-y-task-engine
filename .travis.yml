@@ -10,4 +10,4 @@ script:
   - make test-unit
   - docker-compose up -d
   - sleep 5
-  - python bin/funcy-task-engine.py xmltest -t tests/funcy/envvar-uuid-nsq-postgres.yml
+  - python bin/funcy-task-engine.py xmltest -t tests/funcy/uuid-nsq-postgres.yml

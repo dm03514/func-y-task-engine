@@ -1,0 +1,57 @@
+---
+max_timeout: 10000000
+name: test_timeout_single_message_streamed
+version: "1"
+events:
+
+  - name: create_nsq_topic
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/create?topic=functional_test"
+
+  - name: empty_nsq_topic
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/empty?topic=functional_test"
+
+  - name: empty_nsq_channel
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/empty?topic=functional_test&channel=test"
+
+  - name: publish_message
+    initiator:
+      type: nsq.NSQPublisherInitiator
+      message: >
+          {
+                "event_id": "e571faea-b053-11e6-8f30-22000bdcc52a",
+                "video_id": "523a4a96e79548b89a000003",
+                "test": "$UUID_STRING_1"
+          }
+      nsqd_address: localhost
+      topic: "functional_test"
+
+  - name: pull_single_message
+    event_fulfillment_strategy:
+      type: nsq.NSQStreamingSingleMessageFulfillment
+      topic: "functional_test"
+      channel: test
+      address: "localhost:4150"
+    transition_conditions:
+        - type: nsq.NSQOnMessage
+
+  - name: valid_json
+    event_fulfillment_strategy:
+      type: results.FromEventNameFulfillment
+      event_name: pull_single_message
+    transition_conditions:
+      - type: assertions.ParseJSON
+        value_property: body
+      - type: assertions.HasKeys
+        keys:
+          - event_id
+          - video_id
+          - test

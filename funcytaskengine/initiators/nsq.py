@@ -3,6 +3,7 @@ import json
 import gnsq
 import logging
 
+from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult
 from .base import BaseInitiator
 
 
@@ -21,10 +22,15 @@ class NSQPublisherInitiator(BaseInitiator):
 
     def execute(self):
         logger.debug('%s', {
-            'message': 'publishing_message_nsq'
+            'message': 'publishing_message_nsq',
+            'body': self.message,
         })
-        gnsq.Nsqd(address=self.nsqd_address).publish(
-            self.topic,
-            json.dumps(self.message)
+
+        return EventSuccessDecoratorResult(
+            gnsq.Nsqd(address=self.nsqd_address).publish(
+                self.topic,
+                json.dumps(self.message)
+            )
         )
+
 

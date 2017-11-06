@@ -14,9 +14,15 @@ class LengthEqual(BaseTransitionCondition):
         self.length = length
 
     def is_met(self, collection):
+        logger.info({
+            'class': self.__class__.__name__,
+            'collection': collection,
+            'length': self.length,
+        })
         assert len(collection) == self.length, 'collection ({}) != expected ({})'.format(
             len(collection), self.length
         )
+        return collection
 
 
 class ParseJSON(BaseTransitionCondition):
@@ -43,6 +49,7 @@ class HasKeys(BaseTransitionCondition):
             to_assert = getattr(value, self.value_property)
 
         logger.info({
+            'type': self,
             'to_assert': to_assert,
             'keys': self.keys,
         })

@@ -18,10 +18,11 @@ class NSQResult(EventResult):
 
 class NSQStreamingFulfillment(BaseFulfillment):
 
-    def __init__(self, type, topic, channel, address):
+    def __init__(self, type, topic, channel, address, take_n=1, take_time=None):
         self.topic = topic
         self.channel = channel
         self.address = address
+        self.take_n = take_n
 
     def run(self, initiator, conditions, **kwargs):
         """
@@ -36,49 +37,17 @@ class NSQStreamingFulfillment(BaseFulfillment):
         initiator.execute()
 
         reader = gnsq.Reader(self.topic, self.channel, self.address)
-        reader._funcy_conditions = conditions
-
-        @reader.on_message.connect
-        def handler(_r, message):
-            message.finish()
-
-            _r._funcy_conditions.initialize(message)
-            if _r._funcy_conditions.are_met():
-                _r.close()
-
-        reader.start()
-        return NSQResult(messages=reader._funcy_conditions.values())
-
-
-# TODO WE SHOULDN"T HAVE A SINGLE MESSAGE FULFILLMENT, WE SHOULD HAVE
-# GENERIC OPERATORS THAT CAN TAKE 1, N, or TIME WORTH OF MESSAGES
-class NSQStreamingSingleMessageFulfillment(BaseFulfillment):
-
-    def __init__(self, type, topic, channel, address):
-        self.topic = topic
-        self.channel = channel
-        self.address = address
-
-    def run(self, initiator, conditions, **kwargs):
-        """
-        Connects to NSQd instance specified by address, and evaluates
-        the conditions on the first message received.
-
-        :param initiator:
-        :param conditions:
-        :return:
-        """
-        # user can still initiate
-        initiator.execute()
-
-        reader = gnsq.Reader(self.topic, self.channel, self.address)
         reader._funcy_messages = []
+        reader._funcy_take_n = self.take_n
 
         @reader.on_message.connect
         def handler(_r, message):
+            # each message finish and save it
             message.finish()
-            _r.close()
             _r._funcy_messages.append(message)
+
+            if len(_r._funcy_messages) == self.take_n:
+                _r.close()
 
         reader.start()
 

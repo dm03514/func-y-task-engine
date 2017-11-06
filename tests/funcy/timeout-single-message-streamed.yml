@@ -36,7 +36,7 @@ events:
 
   - name: pull_single_message
     event_fulfillment_strategy:
-      type: nsq.NSQStreamingSingleMessageFulfillment
+      type: nsq.NSQStreamingFulfillment
       topic: "functional_test"
       channel: test
       address: "localhost:4150"

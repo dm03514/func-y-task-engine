@@ -25,16 +25,3 @@ class NSQOnMessage(BaseTransitionCondition):
                 'messages': messages
             })
             return messages
-
-
-class NSQOnJSONMessage(BaseTransitionCondition):
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def is_met(self, message):
-        message_body = json.loads(NSQOnMessage().is_met(message))
-        logging.debug({
-            'message_body': message_body
-        })
-        return message_body

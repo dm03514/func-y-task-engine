@@ -88,9 +88,7 @@ class Events(object):
         event = self.events_dict[event_name]
 
         try:
-            result = event.execute(
-                event_results=self.event_results
-            )
+            result = event.execute(event_results=self.event_results)
             self.event_results.add(result)
 
         except (Exception, Timeout) as e:

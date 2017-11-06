@@ -1,6 +1,6 @@
 ---
 max_timeout: 100000000000
-name: ENVVAR_UUID_nsq_postgres_assertions
+name: UUID_nsq_postgres_assertions
 version: "1"
 events:
 

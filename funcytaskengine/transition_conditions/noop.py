@@ -3,5 +3,5 @@ from .base import BaseTransitionCondition
 
 class NoopCondition(BaseTransitionCondition):
 
-    def is_met(self, *args, **kwargs):
-        return True
+    def is_met(self, values, *args, **kwargs):
+        return values

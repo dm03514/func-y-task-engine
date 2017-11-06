@@ -81,8 +81,6 @@ class TaskEngine(object):
 
                     self.machine.run_current_event(event_result_q=self.event_result_q)
 
-                # gevent.sleep(settings.ENGINE_LOOP_INTERVAL)
-
         except Timeout:
             logger.error('%s', {
                 'message': 'task timeout reached',

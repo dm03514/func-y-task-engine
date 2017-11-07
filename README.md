@@ -2,7 +2,12 @@
 
 An extensible asynchronous task execution framework, aimed at supporting functional (e2e) testing.
 Allows for modeling of tasks as statemachines, using a delcaritive yaml syntax.
-Schedules, executes instructions, applies task state transitions, and reports on task statuses.
+Schedules, executes instructions, applies task state transitions, and reports on task statuses.  Use for:
+
+- Language agnostic tests
+- Simple declaritave test configuration, suited for both programmers and non-programmers
+- Python core leverages rich python client library ecosystem
+- Easily extensible component-based design
 
 ## Problem
 Writing reliable functional (e2e) tests is hard.  They are notorious for being flaky, time consuming, and difficult 
@@ -29,6 +34,7 @@ defined as a list of state definitions.
 
 ## Use cases
 - Functional/e2e live in service repo along side code
+- Test configuration simple enough for QA or non-programmers
 - SLA e2e latencies (future API release)
 
 

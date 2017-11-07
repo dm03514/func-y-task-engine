@@ -3,7 +3,6 @@ max_timeout: 10000000
 name: test_timeout_single_message_streamed
 version: "1"
 events:
-
   - name: create_nsq_topic
     initiator:
       method: post

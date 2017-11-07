@@ -15,7 +15,7 @@ class LengthEqual(BaseTransitionCondition):
 
     def is_met(self, collection):
         logger.info({
-            'class': self.__class__.__name__,
+            'class': self.__class__,
             'collection': collection,
             'length': self.length,
         })
@@ -30,7 +30,13 @@ class ParseJSON(BaseTransitionCondition):
     def __init__(self, type, value_property=None):
         self.value_property = value_property
 
-    def is_met(self, value):
+    def is_met(self, values):
+        vs = []
+        for v in values:
+            vs.append(self.parse(v))
+        return vs
+
+    def parse(self, value):
         to_load = value
         if self.value_property:
             to_load = getattr(value, self.value_property)

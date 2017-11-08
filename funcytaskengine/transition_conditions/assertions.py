@@ -2,10 +2,31 @@ import json
 
 import logging
 
+from nose.tools import assert_dict_equal
+
 from .base import BaseTransitionCondition
 
 
 logger = logging.getLogger(__name__)
+
+
+class DictEqual(BaseTransitionCondition):
+    def __init__(self, type, members):
+        self.members = members
+
+    def is_met(self, values):
+        logger.info({
+            'class': self.__class__,
+            'members': self.members,
+        })
+        assertion_dict = self._build_dict_from_yml_members(self.members)
+        assert_dict_equal(values, assertion_dict, '{} != {}'.format(values, assertion_dict))
+        return values
+
+    def _build_dict_from_yml_members(self, yml_members):
+        return {
+            m['key']: m['values'] for m in yml_members
+        }
 
 
 class LengthEqual(BaseTransitionCondition):

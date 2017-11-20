@@ -1,6 +1,6 @@
 # Functional (func-y) Task Engine
 
-An extensible asynchronous task execution framework, aimed at supporting functional (e2e) testing.
+An extensible asynchronous task execution framework, aimed at supporting functional/acceptance (e2e) testing.
 Allows for modeling of tasks as statemachines, using a delcaritive yaml syntax.
 Schedules, executes instructions, applies task state transitions, and reports on task statuses.  Use for:
 
@@ -9,8 +9,14 @@ Schedules, executes instructions, applies task state transitions, and reports on
 - Python core leverages rich python client library ecosystem
 - Easily extensible component-based design
 
+Funcy helps to accelerate you and your team by enforcing a strict seperation of test code and service code.  It removes manual effort by having "batteries-included" for the most popular protocols and services, and allowing easy extension, through a flexible plugin system written in python, for anything not included.
+
+Writing tests in funcy is amazingly fast after learning the test executing flow and toolkit.  It enables reliable standardized and uniform tests which can be written in minutes.  Enables tests to be written in the same framework regardless of service language.  Funcy is a powerful test framework which benefits from a composable, extensible, component based approach.  Effort to extending the framework is minimal and then accessible by all service teams independent of service language.
+
+Functional Tests shouldn't have logic, they should have states.  Let funcy transition your tests through those states and worry about the concurrency, allowing you to focus on what your service does, and not the test infrastructure.
+
 ## Problem
-Writing reliable functional (e2e) tests is hard.  They are notorious for being flaky, time consuming, and difficult 
+Writing reliable functional/acceptance (e2e) tests is hard.  They are notorious for being flaky, time consuming, and difficult 
 to maintain because they require:
 
 - multiple protocols
@@ -31,9 +37,19 @@ defined as a list of state definitions.
 - Various task runners
     - input yaml
     - reports to stdout/junit xml
-
+- Reduces test related flakiness due to concurrency, and false positives related to timing by taking a concurrency first approach to state transitions
+    
+    
 ## Use cases
-- Functional/e2e live in service repo along side code
+- Functional/Acceptance (e2e) tests live in service repo along side code
+- Asynchronous service testing
+    - consider many functional tests have test like
+    - ```
+    do_something()
+    sleep(10)
+    make_assertions()
+    ```
+    - Funcy solves these timeing related failures by providing primitives for polling or asyncrhonously registering event listeners and performing an action only after events occur
 - Test configuration simple enough for QA or non-programmers
 - SLA e2e latencies (future API release)
 

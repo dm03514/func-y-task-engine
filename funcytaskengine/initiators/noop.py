@@ -1,3 +1,4 @@
+from funcytaskengine.event_fulfillment.return_values import EmptyValues
 from funcytaskengine.initiators.base import BaseInitiator
 
 
@@ -7,4 +8,4 @@ class NoopInitiator(BaseInitiator):
         pass
 
     def execute(self):
-        pass
+        return EmptyValues()

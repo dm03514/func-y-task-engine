@@ -46,6 +46,23 @@ class Valuesable(object):
         raise NotImplementedError()
 
 
+class EmptyValues(Valuesable):
+    def values(self):
+        return ()
+
+
+class ValuesWrappedSingle(Valuesable):
+    """
+    Takes a single value and wraps it in a list so
+    it complies with the Valuesable interface.
+    """
+    def __init__(self, value):
+        self.v = value
+
+    def values(self):
+        return (self.v,)
+
+
 class EventFailureResult(EventResult):
 
     def success(self):

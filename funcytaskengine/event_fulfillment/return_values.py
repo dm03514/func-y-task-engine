@@ -38,6 +38,14 @@ class EventSuccessDecoratorResult(EventResult):
         return self.wrapped.values()
 
 
+class Valuable(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def values(self):
+        raise NotImplementedError()
+
+
 class EventFailureResult(EventResult):
 
     def success(self):

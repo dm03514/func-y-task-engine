@@ -65,3 +65,17 @@ class HasKeys(BaseTransitionCondition):
             })
             assert set(to_assert) == set(self.keys)
         return values
+
+
+class Equal(BaseTransitionCondition):
+    def __init__(self, type, to_equal, value_property=None):
+        self.value_property = value_property
+        self.to_equal = to_equal
+
+    def is_met(self, values):
+        for v in values:
+            if self.value_property:
+                to_assert = getattr(v, self.value_property)
+            assert self.to_equal == to_assert, '{} != {}'.format(self.to_equal, to_assert)
+        return values
+

@@ -76,6 +76,7 @@ class TaskEngine(object):
                     if self.machine.state == STATES.FINISHED:
                         logger.debug('%s', {
                             'message': 'task_execution_finished',
+                            'status': 'SUCCESS',
                         })
                         return True
 

@@ -3,7 +3,6 @@ max_timeout: 10000000
 name: test_timeout_single_message_streamed
 version: "1"
 events:
-
   - name: create_nsq_topic
     initiator:
       method: post
@@ -48,7 +47,7 @@ events:
       type: results.FromEventNameFulfillment
       event_name: pull_single_message
     transition_conditions:
-      - type: assertions.ParseJSON
+      - type: transformations.ParseJSON
         value_property: body
       - type: assertions.HasKeys
         keys:

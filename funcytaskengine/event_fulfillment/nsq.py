@@ -1,7 +1,11 @@
 import gnsq
+import logging
 
 from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult
 from .base import BaseFulfillment
+
+
+logger = logging.getLogger(__name__)
 
 
 class NSQResult(EventResult):
@@ -50,6 +54,11 @@ class NSQStreamingFulfillment(BaseFulfillment):
                 _r.close()
 
         reader.start()
+
+        logger.debug({
+            'class': self.__class__.__name__,
+            'num_messages': len(reader._funcy_messages),
+        })
 
         conditions.initialize(reader._funcy_messages)
 

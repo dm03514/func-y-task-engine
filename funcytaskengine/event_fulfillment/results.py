@@ -2,10 +2,6 @@ from funcytaskengine.event_fulfillment.base import BaseFulfillment
 from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult, EventFailureResult
 
 
-def extract_fn(values):
-    return values[0]
-
-
 class FromEventNameFulfillment(BaseFulfillment):
 
     def __init__(self, type, event_name):
@@ -13,12 +9,11 @@ class FromEventNameFulfillment(BaseFulfillment):
 
     def run(self, initiator, conditions, event_results, **kwargs):
         result = event_results.return_value_from_name(self.event_name)
-        i = extract_fn(result.values())
 
-        conditions.initialize(i)
+        conditions.initialize(result.values())
 
         if conditions.are_met():
-            return EventSuccessDecoratorResult(i)
+            return EventSuccessDecoratorResult(conditions.values())
 
         return EventFailureResult()
 

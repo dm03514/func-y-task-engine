@@ -38,7 +38,7 @@ class EventSuccessDecoratorResult(EventResult):
         return self.wrapped.values()
 
 
-class Valuable(object):
+class Valuesable(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod

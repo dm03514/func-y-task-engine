@@ -1,10 +1,10 @@
 import requests
 
-from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult, EventResult, Valuable
+from funcytaskengine.event_fulfillment.return_values import Valuesable
 from funcytaskengine.initiators.base import BaseInitiator
 
 
-class HTTPValues(Valuable):
+class HTTPValues(Valuesable):
 
     def __init__(self, response):
         self.vs = [response]

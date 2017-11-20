@@ -51,7 +51,15 @@ class EmptyValues(Valuesable):
         return ()
 
 
-class ValuesWrappedSingle(Valuesable):
+class ValuesCollection(Valuesable):
+    def __init__(self, vs):
+        self.vs = vs
+
+    def values(self):
+        return self.vs
+
+
+class ValuesWrappedContainer(Valuesable):
     """
     Takes a single value and wraps it in a list so
     it complies with the Valuesable interface.

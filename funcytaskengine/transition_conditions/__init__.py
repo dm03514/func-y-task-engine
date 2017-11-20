@@ -15,6 +15,11 @@ class TransitionConditions(object):
         self.vs = None
 
     def initialize(self, vs):
+        """
+
+        :param vs:
+        :return:
+        """
         self.initialized = True
         self.vs = vs
 

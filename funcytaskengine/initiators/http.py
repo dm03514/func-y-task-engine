@@ -1,6 +1,6 @@
 import requests
 
-from funcytaskengine.event_fulfillment.return_values import ValuesWrappedSingle
+from funcytaskengine.event_fulfillment.return_values import ValuesWrappedContainer
 from funcytaskengine.initiators.base import BaseInitiator
 
 
@@ -11,6 +11,6 @@ class HTTPInitiator(BaseInitiator):
         self.url = url
 
     def execute(self):
-        return ValuesWrappedSingle(
+        return ValuesWrappedContainer(
             getattr(requests, self.method)(self.url)
         )

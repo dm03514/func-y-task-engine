@@ -8,7 +8,10 @@ class ListToDictByKeyTestCase(unittest.TestCase):
         t = ListToDictByKey(type=None, by_key='test')
         EMPTY_DICT = {}
         EMPTY_LIST = []
-        self.assertEqual(EMPTY_DICT, t.is_met(EMPTY_LIST))
+        self.assertEqual(
+            EMPTY_DICT,
+            t.is_met(EMPTY_LIST),
+        )
 
     def test_one_value(self):
         t = ListToDictByKey(type=None, by_key='test1')

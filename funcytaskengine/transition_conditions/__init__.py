@@ -24,7 +24,7 @@ class TransitionConditions(object):
         self.vs = vs
 
     def values(self):
-        return self.vs
+        return self.vs.values()
 
     def are_met(self):
         """

@@ -17,16 +17,17 @@ class DictEqual(BaseTransitionCondition):
 
     def is_met(self, vs):
         expected = json.loads(self.expected)
+        for v in vs.values():
+            pprint.pprint(expected)
+            pprint.pprint(v)
+            logger.info({
+                'class': self.__class__,
+                'expected': expected,
+                'received': json.dumps(v),
+            })
+            assert_dict_equal(v, expected, '{} != {}'.format(v, expected))
 
-        pprint.pprint(expected)
-        pprint.pprint(vs.values())
-        logger.info({
-            'class': self.__class__,
-            'expected': expected,
-            'received': json.dumps(values),
-        })
-        assert_dict_equal(values, expected, '{} != {}'.format(values, expected))
-        return values
+        return vs
 
 
 class LengthEqual(BaseTransitionCondition):

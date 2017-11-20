@@ -53,7 +53,7 @@ class EmptyValues(Valuesable):
 
 class ValuesCollection(Valuesable):
     def __init__(self, vs):
-        self.vs = vs
+        self.vs = tuple(vs)
 
     def values(self):
         return self.vs

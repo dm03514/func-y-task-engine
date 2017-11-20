@@ -10,10 +10,10 @@ class FromEventNameFulfillment(BaseFulfillment):
     def run(self, initiator, conditions, event_results, **kwargs):
         result = event_results.return_value_from_name(self.event_name)
 
-        conditions.initialize(result.values())
+        conditions.initialize(result)
 
         if conditions.are_met():
-            return EventSuccessDecoratorResult(conditions.values())
+            return EventSuccessDecoratorResult(conditions)
 
         return EventFailureResult()
 

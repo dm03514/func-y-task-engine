@@ -38,13 +38,13 @@ def test_individual(file_name):
         task_template = processor.substitute(task_template)
 
     state_dict = yaml.load(task_template)
+    print(state_dict)
 
     machine = TaskMachine(machine_dict=state_dict)
     assert machine.state == STATES.PENDING
     engine = TaskEngine(machine)
     result = engine.run()
     assert result == True
-    print(state_dict)
 
 
 class ConfigTestLoader(object):

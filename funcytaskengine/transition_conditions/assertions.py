@@ -1,6 +1,7 @@
 import json
 
 import logging
+import pprint
 
 from nose.tools import assert_dict_equal
 
@@ -11,22 +12,21 @@ logger = logging.getLogger(__name__)
 
 
 class DictEqual(BaseTransitionCondition):
-    def __init__(self, type, members):
-        self.members = members
+    def __init__(self, type, expected):
+        self.expected = expected
 
     def is_met(self, values):
+        expected = json.loads(self.expected)
+
+        pprint.pprint(expected)
+        pprint.pprint(values)
         logger.info({
             'class': self.__class__,
-            'members': self.members,
+            'expected': expected,
+            'received': json.dumps(values),
         })
-        assertion_dict = self._build_dict_from_yml_members(self.members)
-        assert_dict_equal(values, assertion_dict, '{} != {}'.format(values, assertion_dict))
+        assert_dict_equal(values, expected, '{} != {}'.format(values, expected))
         return values
-
-    def _build_dict_from_yml_members(self, yml_members):
-        return {
-            m['key']: m['values'] for m in yml_members
-        }
 
 
 class LengthEqual(BaseTransitionCondition):

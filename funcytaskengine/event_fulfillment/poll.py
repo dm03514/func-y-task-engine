@@ -1,6 +1,7 @@
 import gevent
 import logging
 
+from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult
 from .base import BaseFulfillment
 
 
@@ -34,17 +35,23 @@ class PollerFulfillment(BaseFulfillment):
             # how do we handle long connections?
 
             # should this be synchronous? I think maybe
+            initiator_result = initiator.execute()
+            conditions.initialize(initiator_result.values())
 
             # If the initiator does not complete in the interval what happens?
             # should it be killed?? and retried?
-            if conditions.are_met(initiator.execute()):
+            if conditions.are_met():
                 logger.debug('%s', {
                     'message': 'poller condition met'
                 })
-                return
+                return EventSuccessDecoratorResult(
+                    conditions.values()
+                )
 
             # if the initiator yields will it yield to the calling function?
             # might have to execute it in a greenlet? Ugh, confusing
             gevent.sleep(self.interval)
+
+            # failure is caught by global timeout....
 
 

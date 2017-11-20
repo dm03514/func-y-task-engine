@@ -44,11 +44,11 @@ defined as a list of state definitions.
 - Functional/Acceptance (e2e) tests live in service repo along side code
 - Asynchronous service testing
     - consider many functional tests have test like
-    - ```
-    do_something()
-    sleep(10)
-    make_assertions()
-    ```
+        ```
+        do_something()
+        sleep(10)
+        make_assertions()
+        ```
     - Funcy solves these timeing related failures by providing primitives for polling or asyncrhonously registering event listeners and performing an action only after events occur
 - Test configuration simple enough for QA or non-programmers
 - SLA e2e latencies (future API release)

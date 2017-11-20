@@ -1,4 +1,4 @@
-# Functional (pronounced funky) Task Engine
+# Func-y (pronounced funky) Task Engine
 
 An extensible asynchronous task execution framework, aimed at supporting functional/acceptance (e2e) testing.
 Func-y allows for modeling of tasks as statemachines, using a delcaritive yaml syntax.

@@ -15,11 +15,16 @@ class TransitionConditions(object):
         self.vs = None
 
     def initialize(self, vs):
+        """
+
+        :param vs:
+        :return:
+        """
         self.initialized = True
         self.vs = vs
 
     def values(self):
-        return self.vs
+        return self.vs.values()
 
     def are_met(self):
         """

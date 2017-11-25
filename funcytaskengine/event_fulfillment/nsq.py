@@ -1,23 +1,12 @@
 import gnsq
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult
+from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult, ValuesContainer, \
+    EventSuccessDecoratorResult
 from .base import BaseFulfillment
 
 
 logger = logging.getLogger(__name__)
-
-
-class NSQResult(EventResult):
-
-    def __init__(self, messages):
-        self.messages = messages
-
-    def values(self):
-        return self.messages
-
-    def success(self):
-        return True
 
 
 class NSQStreamingFulfillment(BaseFulfillment):
@@ -60,9 +49,15 @@ class NSQStreamingFulfillment(BaseFulfillment):
             'num_messages': len(reader._funcy_messages),
         })
 
-        conditions.initialize(reader._funcy_messages)
+        conditions.initialize(
+            ValuesContainer(
+                reader._funcy_messages
+            )
+        )
 
         if conditions.are_met():
-            return NSQResult(messages=conditions.values())
+            return EventSuccessDecoratorResult(
+                conditions
+            )
 
         return EventFailureResult()

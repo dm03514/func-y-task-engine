@@ -15,18 +15,24 @@ class DictEqual(BaseTransitionCondition):
     def __init__(self, type, expected):
         self.expected = expected
 
-    def is_met(self, values):
-        expected = json.loads(self.expected)
-
-        pprint.pprint(expected)
-        pprint.pprint(values)
+    def is_met(self, vs):
         logger.info({
             'class': self.__class__,
-            'expected': expected,
-            'received': json.dumps(values),
+            'expected': self.expected,
         })
-        assert_dict_equal(values, expected, '{} != {}'.format(values, expected))
-        return values
+        expected = json.loads(self.expected)
+
+        for v in vs.values():
+            pprint.pprint(expected)
+            pprint.pprint(v)
+            logger.info({
+                'class': self.__class__,
+                'expected': expected,
+                'received': json.dumps(v),
+            })
+            assert_dict_equal(v, expected, '{} != {}'.format(v, expected))
+
+        return vs
 
 
 class LengthEqual(BaseTransitionCondition):
@@ -34,16 +40,16 @@ class LengthEqual(BaseTransitionCondition):
     def __init__(self, type, length):
         self.length = length
 
-    def is_met(self, collection):
+    def is_met(self, vs):
         logger.info({
             'class': self.__class__,
-            'collection': collection,
+            'collection': vs,
             'length': self.length,
         })
-        assert len(collection) == self.length, 'collection ({}) != expected ({})'.format(
-            len(collection), self.length
+        assert len(vs.values()) == self.length, 'collection ({}) != expected ({})'.format(
+            len(vs.values()), self.length
         )
-        return collection
+        return vs
 
 
 class HasKeys(BaseTransitionCondition):
@@ -52,8 +58,8 @@ class HasKeys(BaseTransitionCondition):
         self.keys = keys
         self.value_property = value_property
 
-    def is_met(self, values):
-        for v in values:
+    def is_met(self, vs):
+        for v in vs.values():
             to_assert = v
             if self.value_property:
                 to_assert = getattr(v, self.value_property)
@@ -64,7 +70,7 @@ class HasKeys(BaseTransitionCondition):
                 'keys': self.keys,
             })
             assert set(to_assert) == set(self.keys)
-        return values
+        return vs
 
 
 class Equal(BaseTransitionCondition):
@@ -72,10 +78,11 @@ class Equal(BaseTransitionCondition):
         self.value_property = value_property
         self.to_equal = to_equal
 
-    def is_met(self, values):
-        for v in values:
+    def is_met(self, vs):
+        for v in vs.values():
+            to_assert = v
             if self.value_property:
                 to_assert = getattr(v, self.value_property)
             assert self.to_equal == to_assert, '{} != {}'.format(self.to_equal, to_assert)
-        return values
+        return vs
 

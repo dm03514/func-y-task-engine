@@ -36,7 +36,7 @@ class PollerFulfillment(BaseFulfillment):
 
             # should this be synchronous? I think maybe
             initiator_result = initiator.execute()
-            conditions.initialize(initiator_result.values())
+            conditions.initialize(initiator_result)
 
             # If the initiator does not complete in the interval what happens?
             # should it be killed?? and retried?
@@ -45,7 +45,7 @@ class PollerFulfillment(BaseFulfillment):
                     'message': 'poller condition met'
                 })
                 return EventSuccessDecoratorResult(
-                    conditions.values()
+                    conditions
                 )
 
             # if the initiator yields will it yield to the calling function?

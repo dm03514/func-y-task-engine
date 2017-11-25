@@ -12,10 +12,12 @@ from gevent import monkey
 
 from parameterized import parameterized
 
+from funcytaskengine.templateprocessors.environmentalvariable import EnvironmentalVariableTemplateProcessor
 from funcytaskengine.templateprocessors.unique import UUIDStringTemplateProcessor
 
 TEMPLATE_PROCESSORS = [
-    UUIDStringTemplateProcessor()
+    EnvironmentalVariableTemplateProcessor(),
+    UUIDStringTemplateProcessor(),
 ]
 
 

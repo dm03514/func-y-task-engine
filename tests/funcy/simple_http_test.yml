@@ -1,5 +1,5 @@
 ---
-max_timeout: 10
+max_timeout: 10000
 name: single_http_request_test
 version: "1"
 

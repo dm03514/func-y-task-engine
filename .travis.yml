@@ -6,8 +6,11 @@ services:
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - sudo /etc/init.d/postgresql stop
+
 script:
   - make test-unit
-  - docker-compose up -d
-  - sleep 5
-  - python bin/funcy-task-engine.py xmltest -t tests/funcy/uuid-nsq-postgres.yml
+  - make start-functional-stack
+  - python setup.py install
+  - make test-functional

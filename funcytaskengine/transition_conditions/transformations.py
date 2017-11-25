@@ -1,6 +1,7 @@
 import json
 import logging
 
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, ValuesContainer
 from funcytaskengine.transition_conditions.base import BaseTransitionCondition
 
 
@@ -11,19 +12,19 @@ class DictExtractFields(BaseTransitionCondition):
     def __init__(self, type, fields):
         self.fields = fields
 
-    def is_met(self, values):
+    def is_met(self, vs):
         logger.info({
             'class': self.__class__.__name__,
-            'values': values,
+            'values': vs.values(),
             'fields_to_extract': self.fields
         })
-        extracted = []
-        for v in values:
+        transformed = []
+        for v in vs.values():
             ex = {}
             for f in self.fields:
                 ex[f] = v[f]
-            extracted.append(ex)
-        return extracted
+            transformed.append(ex)
+        return ValuesContainer(transformed)
 
 
 class ListToDictByKey(BaseTransitionCondition):
@@ -31,9 +32,11 @@ class ListToDictByKey(BaseTransitionCondition):
     def __init__(self, type, by_key):
         self.by_key = by_key
 
-    def is_met(self, values):
+    def is_met(self, vs):
         # what to do if a dictionary has the same key?!?!?
-        return {v[self.by_key]: v for v in values}
+        return ValuesContainer(
+            {v[self.by_key]: v for v in vs.values()}
+        )
 
 
 class ParseJSON(BaseTransitionCondition):
@@ -41,11 +44,11 @@ class ParseJSON(BaseTransitionCondition):
     def __init__(self, type, value_property=None):
         self.value_property = value_property
 
-    def is_met(self, values):
-        vs = []
-        for v in values:
-            vs.append(self.parse(v))
-        return vs
+    def is_met(self, vs):
+        transformed = []
+        for v in vs.values():
+            transformed.append(self.parse(v))
+        return ValuesContainer(transformed)
 
     def parse(self, value):
         to_load = value

@@ -20,6 +20,6 @@ class SingleFireFulfillment(BaseFulfillment):
         conditions.initialize(initiator_result)
 
         if conditions.are_met():
-            return EventSuccessDecoratorResult(conditions.values())
+            return EventSuccessDecoratorResult(conditions)
 
         return EventFailureResult()

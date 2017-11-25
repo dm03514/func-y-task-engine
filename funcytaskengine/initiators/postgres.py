@@ -1,5 +1,6 @@
 import psycopg2
 
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, EmptyValues
 from funcytaskengine.initiators.base import BaseInitiator
 
 
@@ -13,7 +14,7 @@ class SelectInitiator(BaseInitiator):
     def execute(self):
         cur = self.conn.cursor()
 
-        results = None
+        results = []
 
         try:
             cur.execute(self.query)
@@ -22,7 +23,7 @@ class SelectInitiator(BaseInitiator):
             self.conn.close()
             cur.close()
 
-        return results
+        return ValuesContainer(results)
 
 
 class QueryInitiator(BaseInitiator):
@@ -34,14 +35,11 @@ class QueryInitiator(BaseInitiator):
     def execute(self):
         cur = self.conn.cursor()
 
-        results = None
-
         try:
             cur.execute(self.query)
-            # results = cur.fetchall()
         finally:
             self.conn.commit()
             self.conn.close()
             cur.close()
 
-        return results
+        return EmptyValues()

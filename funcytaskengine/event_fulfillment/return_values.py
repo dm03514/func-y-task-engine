@@ -46,6 +46,45 @@ class Valuesable(object):
         raise NotImplementedError()
 
 
+class EmptyValues(Valuesable):
+
+    def values(self):
+        return ()
+
+
+class ValuesContainer(Valuesable):
+    """
+    Wraps any value and exposes it as a `Valuesable` interface.
+
+    This is the primitive of the system and how different components
+    communicate.  All values should be wrapped in a ValuesContainer.
+    """
+    def __init__(self, value):
+        self.v = value
+
+    def values(self):
+        """
+        Returns the value as a tuple.
+
+        If the value is a list or a tuple it will wrap those as a tuple.
+        If it is a single value it will wrap it as a tuple.
+        :return:
+        """
+        if self._is_collection(self.v):
+            return tuple(self.v)
+        else:
+            return (self.v,)
+
+    def _is_collection(self, value):
+        """
+        Determines if a value is a collection, ie list/tuple
+
+        :param value:
+        :return:
+        """
+        return isinstance(value, list) or isinstance(value, tuple)
+
+
 class EventFailureResult(EventResult):
 
     def success(self):

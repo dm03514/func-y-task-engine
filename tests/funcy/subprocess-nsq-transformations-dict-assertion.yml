@@ -1,0 +1,66 @@
+---
+max_timeout: 10000000
+name: subprocess_nsq_transformations_dict_assertion
+version: "1"
+events:
+  - name: create_nsq_topic
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/create?topic=subprocess_test"
+
+  - name: empty_nsq_topic
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/empty?topic=subprocess_test"
+
+  - name: empty_nsq_channel
+    initiator:
+      method: post
+      type: http.HTTPInitiator
+      url: "http://localhost:4151/topic/empty?topic=subprocess_test&channel=test"
+
+  - name: execute_test_nsq_publish_command
+    initiator:
+      type: shell.SubprocessInitiator
+      command:
+        - python
+        - $ENV_VAR_TEST_NSQ_SUBPROCESS_PUBLISH_EXECUTABLE
+        - "-t"
+        - "subprocess_test"
+        - "--num-messages"
+        - "3"
+    transition_conditions:
+        - type: assertions.Equal
+          to_equal: 0
+
+  - name: pull_nsq_messages
+    event_fulfillment_strategy:
+      type: nsq.NSQStreamingFulfillment
+      topic: subprocess_test
+      channel: test
+      address: "localhost:4150"
+      take_n: 3
+    transition_conditions:
+        - type: transformations.ParseJSON
+          value_property: body
+
+  - name: message_bodies
+    event_fulfillment_strategy:
+      type: results.FromEventNameFulfillment
+      event_name: pull_nsq_messages
+    transition_conditions:
+      - type: transformations.DictExtractFields
+        fields:
+          - message
+          - number
+      - type: transformations.ListToDictByKey
+        by_key: message
+      - type: assertions.DictEqual
+        expected: >
+          {
+            "hi-0": {"message": "hi-0", "number": 0},
+            "hi-1": {"message": "hi-1", "number": 1},
+            "hi-2": {"message": "hi-2", "number": 2}
+          }

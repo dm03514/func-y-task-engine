@@ -16,7 +16,12 @@ class DictEqual(BaseTransitionCondition):
         self.expected = expected
 
     def is_met(self, vs):
+        logger.info({
+            'class': self.__class__,
+            'expected': self.expected,
+        })
         expected = json.loads(self.expected)
+
         for v in vs.values():
             pprint.pprint(expected)
             pprint.pprint(v)
@@ -75,6 +80,7 @@ class Equal(BaseTransitionCondition):
 
     def is_met(self, vs):
         for v in vs.values():
+            to_assert = v
             if self.value_property:
                 to_assert = getattr(v, self.value_property)
             assert self.to_equal == to_assert, '{} != {}'.format(self.to_equal, to_assert)

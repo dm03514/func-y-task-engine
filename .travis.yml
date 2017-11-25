@@ -7,7 +7,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - sudo service postgres stop
+  - sudo /etc/init.d/postgresql stop
 
 script:
   - make test-unit

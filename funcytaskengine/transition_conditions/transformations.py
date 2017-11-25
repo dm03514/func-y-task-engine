@@ -1,7 +1,7 @@
 import json
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import ValuesCollection, ValuesWrappedContainer
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, ValuesContainer
 from funcytaskengine.transition_conditions.base import BaseTransitionCondition
 
 
@@ -24,7 +24,7 @@ class DictExtractFields(BaseTransitionCondition):
             for f in self.fields:
                 ex[f] = v[f]
             transformed.append(ex)
-        return ValuesCollection(transformed)
+        return ValuesContainer(transformed)
 
 
 class ListToDictByKey(BaseTransitionCondition):
@@ -34,7 +34,7 @@ class ListToDictByKey(BaseTransitionCondition):
 
     def is_met(self, vs):
         # what to do if a dictionary has the same key?!?!?
-        return ValuesWrappedContainer(
+        return ValuesContainer(
             {v[self.by_key]: v for v in vs.values()}
         )
 
@@ -48,7 +48,7 @@ class ParseJSON(BaseTransitionCondition):
         transformed = []
         for v in vs.values():
             transformed.append(self.parse(v))
-        return ValuesCollection(transformed)
+        return ValuesContainer(transformed)
 
     def parse(self, value):
         to_load = value

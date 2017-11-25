@@ -1,6 +1,6 @@
 import psycopg2
 
-from funcytaskengine.event_fulfillment.return_values import ValuesCollection, EmptyValues
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, EmptyValues
 from funcytaskengine.initiators.base import BaseInitiator
 
 
@@ -23,7 +23,7 @@ class SelectInitiator(BaseInitiator):
             self.conn.close()
             cur.close()
 
-        return ValuesCollection(results)
+        return ValuesContainer(results)
 
 
 class QueryInitiator(BaseInitiator):

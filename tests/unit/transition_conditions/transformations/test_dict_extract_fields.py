@@ -1,6 +1,6 @@
 import unittest
 
-from funcytaskengine.event_fulfillment.return_values import EmptyValues, ValuesCollection, ValuesWrappedContainer
+from funcytaskengine.event_fulfillment.return_values import EmptyValues, ValuesContainer, ValuesContainer
 from funcytaskengine.transition_conditions.transformations import DictExtractFields
 
 
@@ -15,7 +15,7 @@ class DictExtractFieldsTestCase(unittest.TestCase):
 
     def test_single_value(self):
         extractor = DictExtractFields(type=None, fields=['test'])
-        values = ValuesWrappedContainer(
+        values = ValuesContainer(
             {
                 'hi': 'hello',
                 'test': 'ok',
@@ -36,7 +36,7 @@ class DictExtractFieldsTestCase(unittest.TestCase):
             'test',
             'hi',
         ])
-        values = ValuesCollection((
+        values = ValuesContainer((
             {
                 'hi': 'hi',
                 'test': 'ok',

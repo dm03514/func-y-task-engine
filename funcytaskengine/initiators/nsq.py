@@ -3,7 +3,7 @@ import json
 import gnsq
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import ValuesWrappedContainer
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer
 from .base import BaseInitiator
 
 
@@ -26,7 +26,7 @@ class NSQPublisherInitiator(BaseInitiator):
             'body': self.message,
         })
 
-        return ValuesWrappedContainer(
+        return ValuesContainer(
             gnsq.Nsqd(address=self.nsqd_address).publish(
                 self.topic,
                 json.dumps(self.message)

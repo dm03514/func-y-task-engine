@@ -1,7 +1,7 @@
 import gnsq
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult, ValuesCollection, \
+from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult, ValuesContainer, \
     EventSuccessDecoratorResult
 from .base import BaseFulfillment
 
@@ -50,7 +50,7 @@ class NSQStreamingFulfillment(BaseFulfillment):
         })
 
         conditions.initialize(
-            ValuesCollection(
+            ValuesContainer(
                 reader._funcy_messages
             )
         )

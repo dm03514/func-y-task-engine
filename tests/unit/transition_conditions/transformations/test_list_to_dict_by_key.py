@@ -1,6 +1,6 @@
 import unittest
 
-from funcytaskengine.event_fulfillment.return_values import ValuesWrappedContainer, ValuesCollection, EmptyValues
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, ValuesContainer, EmptyValues
 from funcytaskengine.transition_conditions.transformations import ListToDictByKey
 
 
@@ -8,7 +8,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
     def test_no_values(self):
         t = ListToDictByKey(type=None, by_key='test')
         self.assertEqual(
-            ValuesWrappedContainer({}).values(),
+            ValuesContainer({}).values(),
             t.is_met(EmptyValues()).values(),
         )
 
@@ -25,7 +25,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
             ),
 
             t.is_met(
-                ValuesWrappedContainer(
+                ValuesContainer(
                     {
                         'test1': 'test1',
                         'test2': 'test2',
@@ -49,7 +49,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
             },),
 
             t.is_met(
-                ValuesCollection([
+                ValuesContainer([
                     {
                         'test1': 'test1',
                         'test2': 'test2',
@@ -75,7 +75,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
             ),
 
             t.is_met(
-                ValuesCollection(
+                ValuesContainer(
                     [
                         {
                             'test1': 'test1',

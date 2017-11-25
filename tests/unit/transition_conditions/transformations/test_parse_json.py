@@ -2,7 +2,7 @@ import unittest
 
 from mock import MagicMock
 
-from funcytaskengine.event_fulfillment.return_values import EmptyValues, ValuesCollection, ValuesWrappedContainer
+from funcytaskengine.event_fulfillment.return_values import EmptyValues, ValuesContainer, ValuesContainer
 from funcytaskengine.transition_conditions.transformations import ParseJSON
 
 
@@ -25,7 +25,7 @@ class ParseJSONTestCase(unittest.TestCase):
             ),
 
             t.is_met(
-                ValuesWrappedContainer('{"hi":"there"}')
+                ValuesContainer('{"hi":"there"}')
             ).values()
         )
 
@@ -41,7 +41,7 @@ class ParseJSONTestCase(unittest.TestCase):
                 }
             ),
             t.is_met(
-                ValuesCollection([
+                ValuesContainer([
                     MagicMock(
                         body='{"hi":"there"}'
                     ),

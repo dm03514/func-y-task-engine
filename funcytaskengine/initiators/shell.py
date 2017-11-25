@@ -1,7 +1,7 @@
 import logging
 import subprocess
 
-from funcytaskengine.event_fulfillment.return_values import ValuesWrappedContainer
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer
 from funcytaskengine.initiators.base import BaseInitiator
 
 
@@ -21,4 +21,4 @@ class SubprocessInitiator(BaseInitiator):
 
         p = subprocess.Popen(self.command)
         returncode = p.wait()
-        return ValuesWrappedContainer(returncode)
+        return ValuesContainer(returncode)

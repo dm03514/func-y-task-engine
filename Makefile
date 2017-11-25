@@ -1,5 +1,10 @@
 
 
+start-functional-stack:
+	docker-compose down
+	docker-compose up -d
+	./bin/wait-for-it.sh localhost:5432
+
 test-unit:
 	nosetests tests.unit
 

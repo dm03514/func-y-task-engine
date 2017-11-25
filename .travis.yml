@@ -6,9 +6,11 @@ services:
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - sudo service postgres stop
+
 script:
   - make test-unit
-  - docker-compose up -d
-  - sleep 5
+  - make start-functional-stack
   - python setup.py install
   - make test-functional

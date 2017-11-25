@@ -62,3 +62,8 @@ tutorial.
 https://github.com/dm03514/func-y-task-engine/wiki/Tutorial---Creating-a-Task
 
 More in depth documentation to come.
+
+## Checkout the Examples
+Func-y is tested with Func-y lending to a growing suite of example tests.
+
+https://github.com/dm03514/func-y-task-engine/tree/master/tests/funcy

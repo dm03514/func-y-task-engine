@@ -2,6 +2,7 @@ import gevent
 import logging
 
 from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult
+from funcytaskengine.transition_conditions import ConditionNotMet
 from .base import BaseFulfillment
 
 
@@ -40,18 +41,15 @@ class PollerFulfillment(BaseFulfillment):
 
             # If the initiator does not complete in the interval what happens?
             # should it be killed?? and retried?
-            if conditions.are_met():
+            try:
+                conditions.apply()
                 logger.debug('%s', {
                     'message': 'poller condition met'
                 })
+            except ConditionNotMet:
+                gevent.sleep(self.interval)
+            else:
                 return EventSuccessDecoratorResult(
                     conditions
                 )
-
-            # if the initiator yields will it yield to the calling function?
-            # might have to execute it in a greenlet? Ugh, confusing
-            gevent.sleep(self.interval)
-
-            # failure is caught by global timeout....
-
 

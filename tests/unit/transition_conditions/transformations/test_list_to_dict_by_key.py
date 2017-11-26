@@ -9,7 +9,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
         t = ListToDictByKey(type=None, by_key='test')
         self.assertEqual(
             ValuesContainer({}).values(),
-            t.is_met(EmptyValues()).values(),
+            t.apply(EmptyValues()).values(),
         )
 
     def test_one_value(self):
@@ -24,7 +24,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
                 },
             ),
 
-            t.is_met(
+            t.apply(
                 ValuesContainer(
                     {
                         'test1': 'test1',
@@ -48,7 +48,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
                 }
             },),
 
-            t.is_met(
+            t.apply(
                 ValuesContainer([
                     {
                         'test1': 'test1',
@@ -74,7 +74,7 @@ class ListToDictByKeyTestCase(unittest.TestCase):
                 },
             ),
 
-            t.is_met(
+            t.apply(
                 ValuesContainer(
                     [
                         {

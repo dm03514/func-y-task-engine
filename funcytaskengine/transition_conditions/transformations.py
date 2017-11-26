@@ -12,7 +12,7 @@ class DictExtractFields(BaseTransitionCondition):
     def __init__(self, type, fields):
         self.fields = fields
 
-    def is_met(self, vs):
+    def apply(self, vs):
         logger.info({
             'class': self.__class__.__name__,
             'values': vs.values(),
@@ -32,7 +32,7 @@ class ListToDictByKey(BaseTransitionCondition):
     def __init__(self, type, by_key):
         self.by_key = by_key
 
-    def is_met(self, vs):
+    def apply(self, vs):
         # what to do if a dictionary has the same key?!?!?
         return ValuesContainer(
             {v[self.by_key]: v for v in vs.values()}
@@ -44,7 +44,7 @@ class ParseJSON(BaseTransitionCondition):
     def __init__(self, type, value_property=None):
         self.value_property = value_property
 
-    def is_met(self, vs):
+    def apply(self, vs):
         transformed = []
         for v in vs.values():
             transformed.append(self.parse(v))

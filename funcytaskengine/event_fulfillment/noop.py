@@ -1,7 +1,6 @@
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import EventFailureResult
-from funcytaskengine.event_fulfillment.return_values import EventSuccessDecoratorResult
+from funcytaskengine.transition_conditions import ApplyConditions
 from .base import BaseFulfillment
 
 
@@ -10,16 +9,11 @@ logger = logging.getLogger(__name__)
 
 class SingleFireFulfillment(BaseFulfillment):
 
+    @ApplyConditions()
     def run(self, initiator, conditions, **kwargs):
         logger.debug({
             'initiator': initiator,
             'conditions': conditions,
         })
+        return initiator.execute()
 
-        initiator_result = initiator.execute()
-        conditions.initialize(initiator_result)
-
-        if conditions.are_met():
-            return EventSuccessDecoratorResult(conditions)
-
-        return EventFailureResult()

@@ -1,8 +1,24 @@
+import functools
+
+from funcytaskengine.event_fulfillment.return_values import Valuesable, EventSuccessDecoratorResult
 from funcytaskengine.parsers.loaders import DynamicConfigLoader
+from funcytaskengine.transition_conditions.exceptions import ConditionNotMet
 
 
 class TransitionConditionFactory(DynamicConfigLoader):
     CONFIG_PACKAGE_PATH = __name__
+
+
+class ApplyConditions(object):
+    def __call__(self, fn):
+        @functools.wraps(fn)
+        def decorated(self, initiator, conditions, *args, **kwargs):
+            result = fn(self, initiator, conditions, *args, **kwargs)
+            assert isinstance(result, Valuesable)
+            conditions.initialize(result)
+            conditions.apply()
+            return EventSuccessDecoratorResult(conditions)
+        return decorated
 
 
 class TransitionConditions(object):
@@ -26,7 +42,7 @@ class TransitionConditions(object):
     def values(self):
         return self.vs.values()
 
-    def are_met(self):
+    def apply(self):
         """
         Checks to see if all the conditions have been met, against the values.
 
@@ -39,6 +55,6 @@ class TransitionConditions(object):
         assert self.initialized
 
         for con in self.conditions:
-            self.vs = con.is_met(self.vs)
+            self.vs = con.apply(self.vs)
 
-        return bool(self.vs)
+        return True

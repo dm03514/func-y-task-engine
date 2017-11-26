@@ -1,3 +1,4 @@
+import traceback
 from collections import namedtuple, OrderedDict
 
 import gevent
@@ -95,7 +96,8 @@ class Events(object):
             logger.error('%s', {
                 'message': 'event_execution_error',
                 'exception': e,
-                'event_name': event_name
+                'event_name': event_name,
+                'stack': traceback.format_exc(),
             })
             return event_result_q.put(EVENT_RESULT.FAILURE)
 

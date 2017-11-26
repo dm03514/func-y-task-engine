@@ -1,0 +1,16 @@
+@startuml
+
+node task_engine {
+    node task_state_machine_n {
+        node events {
+            node event_n {
+                node fulfillment {
+                    [initiator]
+                    [conditions]
+                }
+            }
+        }
+    }
+}
+
+@enduml

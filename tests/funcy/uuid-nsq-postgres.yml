@@ -1,14 +1,17 @@
 ---
-max_timeout: 100000000000
+max_timeout: 10
 name: UUID_nsq_postgres_assertions
 version: "1"
 events:
-
   - name: create_nsq_topic
     initiator:
       method: post
       type: http.HTTPInitiator
       url: "http://localhost:4151/topic/create?topic=funcy_task"
+    transition_conditions:
+      - type: assertions.Equal
+        value_property: status_code
+        to_equal: 200
 
   - name: publish_message
     initiator:

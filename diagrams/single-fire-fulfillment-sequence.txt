@@ -1,0 +1,11 @@
+@startuml
+
+taskmachine -> events : run(event_name)
+events -> event : execute()
+event -> fulfillment : run()
+fulfillment -> initiator : execute()
+fulfillment -> conditions : initialize(Valuesable)
+fulfillment -> conditions : apply()
+fulfillment -> event : return EventResult
+
+@enduml

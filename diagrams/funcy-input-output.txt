@@ -1,0 +1,16 @@
+@startuml
+
+(single test)
+(suite config)
+
+rectangle func-y {
+    (engine)
+}
+
+(report - pass/fail)
+
+(single test) <-- (engine)
+(suite config) <-- (engine)
+(engine) --> (report - pass/fail)
+
+@enduml

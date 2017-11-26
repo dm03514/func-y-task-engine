@@ -15,7 +15,7 @@ class DictEqual(BaseTransitionCondition):
     def __init__(self, type, expected):
         self.expected = expected
 
-    def is_met(self, vs):
+    def apply(self, vs):
         logger.info({
             'class': self.__class__,
             'expected': self.expected,
@@ -40,7 +40,7 @@ class LengthEqual(BaseTransitionCondition):
     def __init__(self, type, length):
         self.length = length
 
-    def is_met(self, vs):
+    def apply(self, vs):
         logger.info({
             'class': self.__class__,
             'collection': vs,
@@ -58,7 +58,7 @@ class HasKeys(BaseTransitionCondition):
         self.keys = keys
         self.value_property = value_property
 
-    def is_met(self, vs):
+    def apply(self, vs):
         for v in vs.values():
             to_assert = v
             if self.value_property:
@@ -78,7 +78,7 @@ class Equal(BaseTransitionCondition):
         self.value_property = value_property
         self.to_equal = to_equal
 
-    def is_met(self, vs):
+    def apply(self, vs):
         for v in vs.values():
             to_assert = v
             if self.value_property:

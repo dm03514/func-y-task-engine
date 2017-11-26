@@ -8,5 +8,5 @@ class BaseTransitionCondition(object):
         pass
 
     @abstractmethod
-    def is_met(self):
+    def apply(self):
         pass

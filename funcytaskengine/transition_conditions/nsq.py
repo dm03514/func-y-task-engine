@@ -13,7 +13,7 @@ class NSQOnMessage(BaseTransitionCondition):
     def __init__(self, *args, **kwargs):
         pass
 
-    def is_met(self, messages):
+    def apply(self, messages):
         """
         Qualifies whenever any truthy message is received.
 

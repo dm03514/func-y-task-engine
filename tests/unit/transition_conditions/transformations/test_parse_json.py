@@ -12,7 +12,7 @@ class ParseJSONTestCase(unittest.TestCase):
         t = ParseJSON(type=None)
         self.assertEqual(
             EmptyValues().values(),
-            t.is_met(EmptyValues()).values(),
+            t.apply(EmptyValues()).values(),
         )
 
     def test_one_valid_value(self):
@@ -24,7 +24,7 @@ class ParseJSONTestCase(unittest.TestCase):
                 },
             ),
 
-            t.is_met(
+            t.apply(
                 ValuesContainer('{"hi":"there"}')
             ).values()
         )
@@ -40,7 +40,7 @@ class ParseJSONTestCase(unittest.TestCase):
                     'hi1': 'there1',
                 }
             ),
-            t.is_met(
+            t.apply(
                 ValuesContainer([
                     MagicMock(
                         body='{"hi":"there"}'

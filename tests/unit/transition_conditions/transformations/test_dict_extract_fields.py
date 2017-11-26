@@ -10,7 +10,7 @@ class DictExtractFieldsTestCase(unittest.TestCase):
         extractor = DictExtractFields(type=None, fields=['test'])
         self.assertEqual(
             EmptyValues().values(),
-            extractor.is_met(EmptyValues()).values(),
+            extractor.apply(EmptyValues()).values(),
         )
 
     def test_single_value(self):
@@ -28,7 +28,7 @@ class DictExtractFieldsTestCase(unittest.TestCase):
                     'test': 'ok',
                 },
             ),
-            extractor.is_met(values).values()
+            extractor.apply(values).values()
         )
 
     def test_multiple_values(self):
@@ -58,5 +58,5 @@ class DictExtractFieldsTestCase(unittest.TestCase):
             }
         ),
 
-            extractor.is_met(values).values()
+            extractor.apply(values).values()
         )

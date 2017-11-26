@@ -1,8 +1,8 @@
 import gnsq
 import logging
 
-from funcytaskengine.event_fulfillment.return_values import EventResult, EventFailureResult, ValuesContainer, \
-    EventSuccessDecoratorResult
+from funcytaskengine.event_fulfillment.return_values import ValuesContainer, EventSuccessDecoratorResult
+from funcytaskengine.transition_conditions import ApplyConditions
 from .base import BaseFulfillment
 
 
@@ -17,6 +17,7 @@ class NSQStreamingFulfillment(BaseFulfillment):
         self.address = address
         self.take_n = take_n
 
+    @ApplyConditions()
     def run(self, initiator, conditions, **kwargs):
         """
         Connects to NSQd instance specified by address, and evaluates
@@ -49,15 +50,6 @@ class NSQStreamingFulfillment(BaseFulfillment):
             'num_messages': len(reader._funcy_messages),
         })
 
-        conditions.initialize(
-            ValuesContainer(
-                reader._funcy_messages
-            )
+        return ValuesContainer(
+            reader._funcy_messages
         )
-
-        if conditions.are_met():
-            return EventSuccessDecoratorResult(
-                conditions
-            )
-
-        return EventFailureResult()

@@ -14,15 +14,19 @@ class EventResults(object):
         return self.by_event_name[event_name]
 
 
-class EventResult(object):
+class Valuesable(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def values(self):
+        raise NotImplementedError()
+
+
+class EventResult(Valuesable):
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def success(self):
-        pass
-
-    @abstractmethod
-    def values(self):
         pass
 
 
@@ -36,14 +40,6 @@ class EventSuccessDecoratorResult(EventResult):
 
     def values(self):
         return self.wrapped.values()
-
-
-class Valuesable(object):
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def values(self):
-        raise NotImplementedError()
 
 
 class EmptyValues(Valuesable):

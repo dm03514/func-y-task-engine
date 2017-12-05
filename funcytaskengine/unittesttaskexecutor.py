@@ -46,7 +46,7 @@ def test_individual(file_name):
     assert machine.state == STATES.PENDING
     engine = TaskEngine(machine)
     result = engine.run()
-    assert result == True
+    assert result
 
 
 class ConfigTestLoader(object):
@@ -98,7 +98,11 @@ class TaskExecutor(object):
 
         :return:
         """
-        p = parameterized(self.clean_names(self.tests_to_run()))
+        p = parameterized(
+            self.clean_names(
+                self.tests_to_run()
+            )
+        )
         test_main = p(test_individual)
         suite = TestLoader().loadTestsFromGenerator(test_main, __name__)
         testRunner = xmlrunner.XMLTestRunner(output='test-reports')

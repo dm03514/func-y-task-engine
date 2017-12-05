@@ -97,8 +97,8 @@ class Events(object):
                 'message': 'event_execution_error',
                 'exception': e,
                 'event_name': event_name,
-                'stack': traceback.format_exc(),
             })
+            logger.error(traceback.format_exc())
             return event_result_q.put(EVENT_RESULT.FAILURE)
 
         event_result_q.put(result.success())

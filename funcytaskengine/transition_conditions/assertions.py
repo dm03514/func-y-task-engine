@@ -23,8 +23,8 @@ class DictEqual(BaseTransitionCondition):
         expected = json.loads(self.expected)
 
         for v in vs.values():
-            pprint.pprint(expected)
-            pprint.pprint(v)
+            logger.info(pprint.pformat(expected))
+            logger.info(pprint.pformat(v))
             logger.info({
                 'class': self.__class__,
                 'expected': expected,

@@ -1,3 +1,6 @@
+# DEPRECTATED !
+See [TEST-ENGINE](https://github.com/dm03514/test-engine) for the next iteration of funcy
+
 # Func-y (pronounced funky) Task Engine
 
 An extensible asynchronous task execution framework, aimed at supporting functional/acceptance (e2e) testing.
